@@ -10,6 +10,8 @@ import type {
 
 const CAMERA_PREFIX = '#/@';
 const ENTITY_ID_PATTERN = /^r3d:[A-Za-z0-9._:-]+$/;
+const MIN_PROFILE_CHAINAGE_M = 0;
+const MAX_PROFILE_CHAINAGE_M = 1_000_000;
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
@@ -87,6 +89,19 @@ function parseBooleanFlag(value: string | null, fallback: boolean): boolean {
   return fallback;
 }
 
+function parseProfileChainage(value: string | null, fallback: number | null): number | null {
+  if (value === null) {
+    return fallback;
+  }
+
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) {
+    return fallback;
+  }
+
+  return round(clamp(parsed, MIN_PROFILE_CHAINAGE_M, MAX_PROFILE_CHAINAGE_M), 1);
+}
+
 export function clampViewState(view: ViewStateSerializable): ViewStateSerializable {
   return {
     longitude: round(clamp(view.longitude, -180, 180), 5),
@@ -153,6 +168,10 @@ export function parseUrlState(hash: string, fallback: AppState = createAppState(
       ),
     },
     selection: parseSelection(params, fallback.selection),
+    profileCursorChainageM: parseProfileChainage(
+      params.get('profile'),
+      fallback.profileCursorChainageM,
+    ),
   });
 }
 
@@ -182,6 +201,9 @@ export function serializeUrlState(state: AppState): string {
   params.set('labels', state.visualization.labelVisible ? '1' : '0');
   params.set('guides', state.visualization.guideVisible ? '1' : '0');
   params.set('uncertainty', state.visualization.uncertaintyVisible ? '1' : '0');
+  if (state.profileCursorChainageM !== null) {
+    params.set('profile', formatNumber(state.profileCursorChainageM, 1));
+  }
 
   const camera = [
     formatNumber(view.latitude, 5),

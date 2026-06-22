@@ -13,13 +13,13 @@ async function selectSearchResult(page: Page, query: string) {
   await page.keyboard.press('Enter');
 }
 
-test('loads the PR-007 development build and metadata', async ({ page }) => {
+test('loads the PR-008 development build and metadata', async ({ page }) => {
   await page.goto('./');
 
   await expect(page.getByRole('heading', { name: 'Railway3D' })).toBeVisible();
   await expect(page.getByText('development build')).toBeVisible();
   await expect(
-    page.getByText('PR-007 adds visualization modes, legend, uncertainty cues, and layer controls'),
+    page.getByText('PR-008 adds the synthetic elevation profile, SVG cursor sync'),
   ).toBeVisible();
   await expect(page.getByRole('link', { name: 'View build metadata' })).toBeVisible();
 
@@ -110,6 +110,73 @@ test('toggles layer and uncertainty controls from the layer panel', async ({ pag
 
   await page.getByTestId('layer-labels').uncheck();
   await expect(page.getByTestId('layer-labels')).not.toBeChecked();
+});
+
+test('renders the synthetic SVG elevation profile and table alternative', async ({ page }) => {
+  await page.goto('./');
+  await waitForMapReady(page);
+
+  await expect(page.getByTestId('profile-status')).toContainText(
+    'Golden synthetic elevation profile',
+  );
+  await expect(page.getByTestId('profile-chart')).toBeVisible();
+  await expect(page.getByTestId('profile-rail-segment')).toHaveCount(2);
+  await expect(page.getByTestId('profile-legend')).toContainText('Null rail gap');
+  await expect(page.getByTestId('profile-table')).toContainText('Station C');
+  await expect(page.getByTestId('profile-table')).toContainText('unknown');
+});
+
+test('syncs profile cursor to the map overlay and URL state', async ({ page }) => {
+  await page.goto('./');
+  await waitForMapReady(page);
+
+  await expect(page.getByTestId('profile-cursor-status')).toContainText('1.00 km');
+  await expect(page.getByTestId('profile-cursor-map-status')).toContainText('1000.0 m');
+
+  await page.getByTestId('profile-chart').scrollIntoViewIfNeeded();
+  await page.getByTestId('profile-chart').focus();
+  await page.keyboard.press('ArrowRight');
+
+  await expect(page.getByTestId('profile-cursor-status')).toContainText('1.50 km');
+  await expect(page.getByTestId('profile-cursor-map-status')).toContainText('1500.0 m');
+  await expect.poll(() => page.url()).toContain('profile=1500');
+
+  await page.reload();
+  await waitForMapReady(page);
+  await expect(page.getByTestId('profile-cursor-status')).toContainText('1.50 km');
+});
+
+test('keeps null rail profile samples explicit', async ({ page }) => {
+  await page.goto('./');
+  await waitForMapReady(page);
+
+  await page.getByTestId('profile-next-sample').click();
+  await page.getByTestId('profile-next-sample').click();
+  await expect(page.getByTestId('profile-cursor-status')).toContainText('2.00 km');
+  await expect(page.getByTestId('profile-cursor-status')).toContainText('rail unknown');
+});
+
+test('brushes the profile and fits the map view', async ({ page }) => {
+  await page.goto('./');
+  await waitForMapReady(page);
+
+  const before = await page.getByTestId('view-state').textContent();
+  const chart = page.getByTestId('profile-chart');
+  await chart.scrollIntoViewIfNeeded();
+  const box = await chart.boundingBox();
+  if (box === null) {
+    throw new Error('Profile chart bounding box was not available.');
+  }
+
+  await page.mouse.move(box.x + box.width * 0.25, box.y + box.height * 0.5);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width * 0.78, box.y + box.height * 0.5);
+  await page.mouse.up();
+
+  await expect(page.getByTestId('profile-brush-status')).toContainText('Map fit');
+  await expect
+    .poll(() => page.getByTestId('view-state').textContent(), { timeout: 10_000 })
+    .not.toBe(before);
 });
 
 test('supports keyboard search, selection, and clear', async ({ page }) => {

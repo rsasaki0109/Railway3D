@@ -43,6 +43,14 @@ export interface ProfileCursor {
   groundPosition: readonly [number, number, number];
 }
 
+export interface ProfileCursorSample {
+  chainageM: number;
+  segmentId: EntityId;
+  position: Position3D;
+  groundPosition: Position3D;
+  railElevationKnown: boolean;
+}
+
 export type Position3D = [longitude: number, latitude: number, elevationM: number];
 
 export type ExaggeratedPositions = Readonly<Record<VerticalExaggeration, Position3D[]>>;
@@ -79,6 +87,7 @@ export interface RenderDataset {
   stations: readonly RenderStation[];
   guides: readonly RenderGuide[];
   profileCursorByExaggeration: Readonly<Record<VerticalExaggeration, ProfileCursor>>;
+  profileCursorSamples: readonly ProfileCursorSample[];
 }
 
 export interface LayerBuildContext {

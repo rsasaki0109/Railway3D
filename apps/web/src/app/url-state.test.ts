@@ -39,6 +39,7 @@ describe('url-state', () => {
         uncertaintyVisible: false,
       },
       selection: { kind: 'line', id: 'r3d:zz:synthetic:line:golden' },
+      profileCursorChainageM: 1234.56,
     });
 
     const hash = serializeUrlState(state);
@@ -47,8 +48,10 @@ describe('url-state', () => {
     expect(hash).toContain('stations=0');
     expect(hash).toContain('guides=0');
     expect(hash).toContain('uncertainty=0');
+    expect(hash).toContain('profile=1234.6');
     expect(parseUrlState(hash).visualization).toEqual(state.visualization);
     expect(parseUrlState(hash).selection).toEqual(state.selection);
+    expect(parseUrlState(hash).profileCursorChainageM).toBe(1234.6);
   });
 
   it('serializes station selection without leaking hover state', () => {
@@ -61,6 +64,11 @@ describe('url-state', () => {
     expect(hash).toContain('station=r3d%3Azz%3Asynthetic%3Astation%3AA');
     expect(hash).not.toContain('hover');
     expect(hash).not.toContain('station%3AC');
+  });
+
+  it('clamps invalid profile cursor state', () => {
+    expect(parseUrlState('#/@35,139,12,45,0?profile=2000000').profileCursorChainageM).toBe(1000000);
+    expect(parseUrlState('#/@35,139,12,45,0?profile=bad').profileCursorChainageM).toBeNull();
   });
 
   it('clamps view state as a pure function', () => {

@@ -4,6 +4,7 @@ import { FeatureInspector } from './features/inspector/FeatureInspector';
 import { LayerPanel } from './features/layers/LayerPanel';
 import { Legend } from './features/legend/Legend';
 import { MapViewport } from './features/map/MapViewport';
+import { ElevationProfilePanel } from './features/profile/ElevationProfilePanel';
 import { SearchCommand } from './features/search/SearchCommand';
 
 const buildLabel = 'development build';
@@ -28,12 +29,13 @@ export function App() {
             <p className="eyebrow">Static-first 3D Railway Geospatial Platform</p>
             <h1 id="app-title">Railway3D</h1>
             <p id="app-summary" className="summary">
-              {getBuildStatusText()}. PR-007 adds visualization modes, legend, uncertainty cues, and
-              layer controls. Real railway data is not implemented yet.
+              {getBuildStatusText()}. PR-008 adds the synthetic elevation profile, SVG cursor sync,
+              null rail gaps, and a table alternative. Real railway data is not implemented yet.
             </p>
           </div>
           <SearchCommand />
           <FeatureInspector />
+          <ElevationProfilePanel />
           <Legend />
           <LayerPanel />
           <div className="panel-actions">

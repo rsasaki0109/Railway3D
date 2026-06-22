@@ -26,7 +26,7 @@ export interface DataSlice {
 }
 
 export interface UiSlice {
-  activePanel: 'none' | 'search' | 'details';
+  activePanel: 'none' | 'search' | 'details' | 'profile';
 }
 
 export interface AppState
@@ -62,6 +62,7 @@ export type AppAction =
   | { type: 'set-visualization'; visualization: VisualizationState }
   | { type: 'set-selection'; selection: Selection }
   | { type: 'set-hovered'; hovered: Selection }
+  | { type: 'set-profile-cursor'; chainageM: number | null }
   | { type: 'set-active-panel'; activePanel: UiSlice['activePanel'] };
 
 export function createAppState(overrides: Partial<AppState> = {}): AppState {
@@ -87,6 +88,8 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       return { ...state, selection: action.selection, activePanel: 'details' };
     case 'set-hovered':
       return { ...state, hovered: action.hovered };
+    case 'set-profile-cursor':
+      return { ...state, profileCursorChainageM: action.chainageM, activePanel: 'profile' };
     case 'set-active-panel':
       return { ...state, activePanel: action.activePanel };
   }

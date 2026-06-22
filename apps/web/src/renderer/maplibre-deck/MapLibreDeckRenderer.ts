@@ -15,7 +15,11 @@ import {
   type ViewStateSerializable,
 } from './view-state';
 import { buildRailwayLayers } from '../railway/layer-factory';
-import { SYNTHETIC_LINE_ID, syntheticRenderDataset } from '../railway/synthetic-render-dataset';
+import {
+  SYNTHETIC_LINE_ID,
+  resolveSyntheticProfileCursor,
+  syntheticRenderDataset,
+} from '../railway/synthetic-render-dataset';
 import type { Selection, VisualizationState } from '../railway/render-types';
 
 export type MapRendererStatus =
@@ -62,6 +66,7 @@ export class MapLibreDeckRenderer {
   };
   #selection: Selection = { kind: 'line', id: SYNTHETIC_LINE_ID };
   #hovered: Selection = null;
+  #profileCursorChainageM: number | null = null;
 
   mount(options: MapLibreDeckRendererOptions): void {
     if (this.#map !== null) {
@@ -122,6 +127,11 @@ export class MapLibreDeckRenderer {
 
   setSelection(selection: Selection): void {
     this.#selection = selection;
+    this.#syncLayers();
+  }
+
+  setProfileCursorChainageM(chainageM: number | null): void {
+    this.#profileCursorChainageM = chainageM;
     this.#syncLayers();
   }
 
@@ -264,10 +274,10 @@ export class MapLibreDeckRenderer {
         visualization: this.#visualization,
         selection: this.#selection,
         hovered: this.#hovered,
-        profileCursor:
-          syntheticRenderDataset.profileCursorByExaggeration[
-            this.#visualization.verticalExaggeration
-          ],
+        profileCursor: resolveSyntheticProfileCursor(
+          this.#profileCursorChainageM,
+          this.#visualization.verticalExaggeration,
+        ),
         callbacks: {
           onHover: (selection) => {
             this.#hovered = selection;

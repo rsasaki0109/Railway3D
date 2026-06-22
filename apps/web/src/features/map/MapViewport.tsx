@@ -102,6 +102,10 @@ export function MapViewport() {
   }, [state.selection]);
 
   useEffect(() => {
+    rendererRef.current?.setProfileCursorChainageM(state.profileCursorChainageM);
+  }, [state.profileCursorChainageM]);
+
+  useEffect(() => {
     rendererRef.current?.setViewState(state.view);
   }, [state.view]);
 
@@ -146,6 +150,12 @@ export function MapViewport() {
           {getStatusLabel(status)}
         </p>
         <p data-testid="selection-status">Selected: {selectionLabel}</p>
+        <p data-testid="profile-cursor-map-status">
+          Profile cursor:{' '}
+          {state.profileCursorChainageM === null
+            ? 'none'
+            : `${state.profileCursorChainageM.toFixed(1)} m`}
+        </p>
       </div>
       <div className="map-overlay map-overlay-bottom">
         <p data-testid="view-state">{formatViewState(state.view)}</p>
