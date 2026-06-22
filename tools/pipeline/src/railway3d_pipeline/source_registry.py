@@ -4,10 +4,14 @@ from pathlib import Path
 from typing import Any
 
 from railway3d_pipeline.json_utils import read_json, sha256_hex, write_json
+from railway3d_pipeline.source_audit import load_tokyo_metro_source_audit
 from railway3d_pipeline.synthetic import SYNTHETIC_DATASET_PATH, SYNTHETIC_REGION_ID, PipelineError
 
 
 def audit_source(region_id: str) -> dict[str, Any]:
+    if region_id == "jp-tokyo-metro":
+        return load_tokyo_metro_source_audit()
+
     dataset = load_synthetic_dataset(region_id)
     return {
         "regionId": region_id,
@@ -29,6 +33,12 @@ def audit_source(region_id: str) -> dict[str, Any]:
 
 
 def fetch_source(region_id: str, output_dir: Path) -> dict[str, Any]:
+    if region_id == "jp-tokyo-metro":
+        raise PipelineError(
+            "SOURCE_FETCH_NOT_IMPLEMENTED",
+            "PR-010 audits Tokyo Metro sources but does not fetch or publish raw source snapshots.",
+        )
+
     dataset = load_synthetic_dataset(region_id)
     output_dir.mkdir(parents=True, exist_ok=True)
     fixture_bytes = SYNTHETIC_DATASET_PATH.read_bytes()
@@ -51,4 +61,3 @@ def load_synthetic_dataset(region_id: str) -> dict[str, Any]:
     if not isinstance(dataset, dict):
         raise PipelineError("DATASET_INVALID", "Synthetic dataset root is not an object.")
     return dataset
-

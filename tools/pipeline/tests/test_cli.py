@@ -27,6 +27,13 @@ def test_source_audit_cli_reports_synthetic_sources(capsys: pytest.CaptureFixtur
     assert "Audited sources for synthetic-golden: 2 source(s)" in capsys.readouterr().out
 
 
+def test_source_audit_cli_reports_tokyo_metro_sources(capsys: pytest.CaptureFixture[str]) -> None:
+    result = main(["source", "audit", "jp-tokyo-metro"])
+
+    assert result == 0
+    assert "Audited sources for jp-tokyo-metro: 4 source(s)" in capsys.readouterr().out
+
+
 def test_build_region_cli_writes_dataset(tmp_path) -> None:
     result = main(["build", "region", "synthetic-golden", "--output", str(tmp_path)])
 

@@ -8,6 +8,7 @@ from railway3d_pipeline.diffing import diff_dataset_files, diff_to_markdown
 from railway3d_pipeline.json_utils import write_json
 from railway3d_pipeline.packaging import package_dataset
 from railway3d_pipeline.schema_validation import validate_dataset_file
+from railway3d_pipeline.source_audit import source_audit_to_markdown
 from railway3d_pipeline.source_registry import audit_source, fetch_source
 from railway3d_pipeline.synthetic import PipelineError, build_synthetic_region
 
@@ -69,7 +70,11 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "source" and args.source_command == "audit":
             report = audit_source(args.region)
             if args.output:
-                write_json(args.output, report)
+                args.output.parent.mkdir(parents=True, exist_ok=True)
+                if args.output.suffix == ".md":
+                    args.output.write_text(source_audit_to_markdown(report), encoding="utf-8")
+                else:
+                    write_json(args.output, report)
             print(f"Audited sources for {args.region}: {report['sourceCount']} source(s)")
             return 0
 

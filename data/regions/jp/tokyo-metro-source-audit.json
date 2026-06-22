@@ -1,0 +1,139 @@
+{
+  "regionId": "jp-tokyo-metro",
+  "title": "Tokyo Metro source audit",
+  "auditDate": "2026-06-23",
+  "scope": "PR-010 source audit only. No real railway geometry, elevation values, or public data package are generated.",
+  "sources": [
+    {
+      "id": "n02-railway-2025",
+      "adapter": "n02",
+      "name": "国土数値情報 鉄道データ N02",
+      "version": "2025年度（令和7年度）版",
+      "publisher": "国土交通省 国土数値情報",
+      "retrievedAt": "2026-06-23",
+      "sourceUrl": "https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N02-2025.html",
+      "license": {
+        "id": "CC-BY-4.0",
+        "name": "Creative Commons Attribution 4.0 International",
+        "attributionRequired": true,
+        "shareAlike": false,
+        "redistributionAllowed": true,
+        "notice": "国土数値情報（鉄道データ）を加工して作成する場合は、出典と加工した旨を表示する。"
+      },
+      "horizontalCrs": "JGD2011 / (B, L)",
+      "verticalDatum": "UNKNOWN",
+      "role": "Line, station, and operator inventory candidate. Not a rail elevation source.",
+      "lineStationCoverage": "Source page states national passenger railway and tram route/station coverage; Tokyo Metro extraction has not been run in PR-010.",
+      "structureCoverage": "No trusted tunnel, bridge, viaduct, or underground structure coverage for Railway3D Z modeling.",
+      "elevationControlCoverage": "None.",
+      "notes": [
+        "Use as canonical inventory candidate only.",
+        "Do not treat N02 geometry as surveyed railway centerline precision.",
+        "Do not derive rail elevation from this source."
+      ]
+    },
+    {
+      "id": "osm-kanto-pbf-planned",
+      "adapter": "osm-pbf",
+      "name": "OpenStreetMap PBF extract for Kanto",
+      "version": "Snapshot not selected in PR-010",
+      "publisher": "OpenStreetMap contributors",
+      "retrievedAt": "not-fetched",
+      "sourceUrl": "https://www.openstreetmap.org/copyright",
+      "license": {
+        "id": "ODbL-1.0",
+        "name": "Open Database License 1.0",
+        "attributionRequired": true,
+        "shareAlike": true,
+        "redistributionAllowed": true,
+        "notice": "Map data from OpenStreetMap. ODbL obligations and attribution must remain visible."
+      },
+      "horizontalCrs": "EPSG:4326",
+      "verticalDatum": "UNKNOWN",
+      "role": "Detailed alignment and structure tag candidate after snapshot selection and conflation.",
+      "lineStationCoverage": "Not audited for Tokyo Metro in PR-010.",
+      "structureCoverage": "Potential tunnel/bridge/covered tags only; tag coverage and conflicts are unaudited.",
+      "elevationControlCoverage": "None. OSM layer/tunnel/bridge tags are not Z values.",
+      "notes": [
+        "Do not convert OSM layer=* to meters.",
+        "Keep ODbL-derived outputs license-separated until legal/data policy review."
+      ]
+    },
+    {
+      "id": "gsi-dem-planned",
+      "adapter": "gsi-dem",
+      "name": "基盤地図情報 数値標高モデル",
+      "version": "Exact DEM mesh product not selected in PR-010",
+      "publisher": "国土地理院",
+      "retrievedAt": "not-fetched",
+      "sourceUrl": "https://service.gsi.go.jp/kiban/",
+      "license": {
+        "id": "GSI-CONTENT-TERMS-PDL-1.0",
+        "name": "国土地理院コンテンツ利用規約 / 公共データ利用規約 1.0",
+        "attributionRequired": true,
+        "shareAlike": false,
+        "redistributionAllowed": "unknown",
+        "notice": "Exact DEM product and survey-law handling must be checked before public redistribution."
+      },
+      "horizontalCrs": "JGD2024 for DEM files provided on or after 2025-07-31; exact CRS must be read from metadata.",
+      "verticalDatum": "JGD2024_ORTHOMETRIC expected for post-2025-07-31 DEM after metadata confirmation",
+      "role": "Ground elevation and terrain rendering source after exact mesh product selection.",
+      "lineStationCoverage": "Not applicable.",
+      "structureCoverage": "None.",
+      "elevationControlCoverage": "Ground elevation only; not rail elevation.",
+      "notes": [
+        "Do not mix pre-revision and post-revision DEM without explicit datum handling.",
+        "DEM grid spacing is not rail elevation accuracy.",
+        "No DEM snapshot is included in PR-010."
+      ]
+    },
+    {
+      "id": "manual-control-points-planned",
+      "adapter": "manual-control-points",
+      "name": "Manual elevation control point registry",
+      "version": "Schema only; no Tokyo Metro values in PR-010",
+      "publisher": "Railway3D contributors",
+      "retrievedAt": "not-applicable",
+      "sourceUrl": "data/regions/jp/tokyo-metro-source-audit.json",
+      "license": {
+        "id": "TBD",
+        "name": "Contribution terms not finalized",
+        "attributionRequired": true,
+        "shareAlike": false,
+        "redistributionAllowed": "unknown",
+        "notice": "Do not publish manually extracted operator-document values until source license and measurement definition are reviewed."
+      },
+      "horizontalCrs": "Depends on submitted control point definition",
+      "verticalDatum": "Must be explicit per value; UNKNOWN values cannot be used for clearance/depth calculation.",
+      "role": "Future Q3/Q4 rail elevation, relative depth, portal, and grade-break controls after review.",
+      "lineStationCoverage": "None in PR-010.",
+      "structureCoverage": "Potential reviewed portal and structure boundary controls after review.",
+      "elevationControlCoverage": "None in PR-010.",
+      "notes": [
+        "No operator-document values are extracted in PR-010.",
+        "Relative depth controls require target, reference ground point, definition, provenance, and uncertainty."
+      ]
+    }
+  ],
+  "conflicts": [
+    "N02 and OSM roles must remain separated: N02 for inventory, OSM for candidate detailed alignment after conflation.",
+    "OSM layer, tunnel, bridge, and covered tags are structure hints, not rail elevation values.",
+    "GSI DEM supplies ground elevation only; it cannot validate rail elevation without control points.",
+    "No operator-published elevation source has been approved for public redistribution in PR-010."
+  ],
+  "candidatePilotCorridors": [
+    {
+      "name": "Not selected in PR-010",
+      "reason": "Pilot corridor selection requires verified rail elevation/control-point coverage and redistribution permission. This audit did not approve such a source."
+    }
+  ],
+  "publicRedistributionDecision": "Do not publish a Tokyo Metro dataset package in PR-010. Publish only this audit report. Raw N02/OSM/GSI snapshots and operator documents are not included.",
+  "unresolvedQuestions": [
+    "Which exact GSI DEM mesh product and retrieval snapshot will be used for Tokyo Metro ground profile?",
+    "Which OSM PBF extract provider and snapshot date will be fixed, and how will ODbL-derived outputs be separated?",
+    "Which Tokyo Metro pilot corridor has publicly reusable rail elevation or relative-depth controls?",
+    "Can any operator-published station depth or longitudinal profile values be redistributed as derived numeric data?",
+    "What manual review sign-off format is required before Q3/Q4 controls are accepted?",
+    "How will N02 and OSM conflation conflicts be reviewed without copying source roles into each other?"
+  ]
+}

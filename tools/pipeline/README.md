@@ -14,6 +14,12 @@ uv run --project tools/pipeline railway3d diff dataset data/sample/synthetic-gol
 uv run --project tools/pipeline railway3d package dataset build/data/synthetic-golden/dataset.json --target build/package/synthetic-golden --public
 ```
 
+PR-010 adds an audit-only Tokyo Metro source configuration:
+
+```bash
+uv run --project tools/pipeline railway3d source audit jp-tokyo-metro --output build/reports/tokyo-metro-source-audit.md
+```
+
 Current scope:
 
 - Deterministic synthetic fixture build and checksum report.
@@ -25,6 +31,12 @@ Current scope:
 
 Known limitations:
 
-- Source audit/fetch supports only `synthetic-golden`.
+- Synthetic build/fetch supports only `synthetic-golden`.
 - No N02, OSM, GSI DEM, or operator-document adapters are implemented in PR-009.
 - The profile solver is still represented by the synthetic fixture and validation checks; full constrained solving begins after this foundation.
+
+PR-010 limitations:
+
+- `jp-tokyo-metro` source audit is report-only.
+- N02, OSM PBF, GSI DEM, and manual control point adapters are audit skeletons; they do not fetch, parse, conflate, or package real data.
+- No Tokyo Metro pilot corridor is selected until rail elevation/control-point coverage and redistribution permission are verified.
