@@ -7,7 +7,8 @@ const baseURL = `http://127.0.0.1:4173${basePath}`;
 
 export default defineConfig({
   testDir: './e2e',
-  fullyParallel: true,
+  fullyParallel: false,
+  workers: 1,
   reporter: [['list']],
   use: {
     baseURL,

@@ -37,6 +37,9 @@ importers:
       '@deck.gl/core':
         specifier: 9.3.4
         version: 9.3.4
+      '@deck.gl/layers':
+        specifier: 9.3.4
+        version: 9.3.4(@deck.gl/core@9.3.4)(@loaders.gl/core@4.4.3)(@luma.gl/core@9.3.5)(@luma.gl/engine@9.3.5(@luma.gl/core@9.3.5)(@luma.gl/shadertools@9.3.5(@luma.gl/core@9.3.5)))
       '@deck.gl/mapbox':
         specifier: 9.3.4
         version: 9.3.4(@deck.gl/core@9.3.4)(@luma.gl/core@9.3.5)(@math.gl/web-mercator@4.1.0)
@@ -120,6 +123,17 @@ packages:
       {
         integrity: sha512-2zQykey/qiToLYsWvKvnT9/+LCe7gNX6/npu39huFxT1zEa8AndF5OZHI0gQuV4btKX6BR5A165FPG8jJJwWrQ==,
       }
+
+  '@deck.gl/layers@9.3.4':
+    resolution:
+      {
+        integrity: sha512-9DnFuWiul3rwE9uuum/AdGt7M/z0gybp6rL0ewlaLFojuaonCkxSQZo/gtEBsJwpw3RrNuhGdBej5axKNvkTgw==,
+      }
+    peerDependencies:
+      '@deck.gl/core': ~9.3.0
+      '@loaders.gl/core': ^4.4.1
+      '@luma.gl/core': ~9.3.3
+      '@luma.gl/engine': ~9.3.3
 
   '@deck.gl/mapbox@9.3.4':
     resolution:
@@ -405,6 +419,12 @@ packages:
     resolution:
       {
         integrity: sha512-FrdHBCVG3QdrworwrUSzXIaK+/9OCRLscxI2OUy6sLOHyHgBMyfnEGs99/m3KNvs+95BsnQLWklVfpKfQzfwKA==,
+      }
+
+  '@math.gl/polygon@4.1.0':
+    resolution:
+      {
+        integrity: sha512-YA/9PzaCRHbIP5/0E9uTYrqe+jsYTQoqoDWhf6/b0Ixz8bPZBaGDEafLg3z7ffBomZLacUty9U3TlPjqMtzPjA==,
       }
 
   '@math.gl/sun@4.1.0':
@@ -1037,6 +1057,12 @@ packages:
         integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==,
       }
     engines: { node: '>=8' }
+
+  earcut@2.2.4:
+    resolution:
+      {
+        integrity: sha512-/pjZsA1b4RPHbeWZQn66SWS8nZZWLQQ23oE3Eam7aroEFGEvwKAsJfZ9ytiEMycfzXWpca4FA9QIOehf7PocBQ==,
+      }
 
   earcut@3.0.2:
     resolution:
@@ -2050,6 +2076,23 @@ snapshots:
     transitivePeerDependencies:
       - '@75lb/nature'
 
+  '@deck.gl/layers@9.3.4(@deck.gl/core@9.3.4)(@loaders.gl/core@4.4.3)(@luma.gl/core@9.3.5)(@luma.gl/engine@9.3.5(@luma.gl/core@9.3.5)(@luma.gl/shadertools@9.3.5(@luma.gl/core@9.3.5)))':
+    dependencies:
+      '@deck.gl/core': 9.3.4
+      '@loaders.gl/core': 4.4.3
+      '@loaders.gl/images': 4.4.3(@loaders.gl/core@4.4.3)
+      '@loaders.gl/schema': 4.4.3
+      '@luma.gl/core': 9.3.5
+      '@luma.gl/engine': 9.3.5(@luma.gl/core@9.3.5)(@luma.gl/shadertools@9.3.5(@luma.gl/core@9.3.5))
+      '@luma.gl/shadertools': 9.3.5(@luma.gl/core@9.3.5)
+      '@mapbox/tiny-sdf': 2.2.0
+      '@math.gl/core': 4.1.0
+      '@math.gl/polygon': 4.1.0
+      '@math.gl/web-mercator': 4.1.0
+      earcut: 2.2.4
+    transitivePeerDependencies:
+      - '@75lb/nature'
+
   '@deck.gl/mapbox@9.3.4(@deck.gl/core@9.3.4)(@luma.gl/core@9.3.5)(@math.gl/web-mercator@4.1.0)':
     dependencies:
       '@deck.gl/core': 9.3.4
@@ -2246,6 +2289,10 @@ snapshots:
   '@math.gl/core@4.1.0':
     dependencies:
       '@math.gl/types': 4.1.0
+
+  '@math.gl/polygon@4.1.0':
+    dependencies:
+      '@math.gl/core': 4.1.0
 
   '@math.gl/sun@4.1.0': {}
 
@@ -2608,6 +2655,8 @@ snapshots:
   deep-is@0.1.4: {}
 
   detect-libc@2.1.2: {}
+
+  earcut@2.2.4: {}
 
   earcut@3.0.2: {}
 

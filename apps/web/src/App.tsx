@@ -17,8 +17,8 @@ export function App() {
         <p className="eyebrow">Static-first 3D Railway Geospatial Platform</p>
         <h1 id="app-title">Railway3D</h1>
         <p id="app-summary" className="summary">
-          {getBuildStatusText()}. PR-004 adds the MapLibre and deck.gl map shell with synthetic
-          terrain only. Real railway data and rendering layers are not implemented yet.
+          {getBuildStatusText()}. PR-005 adds synthetic railway rendering and X-ray layers on the
+          MapLibre and deck.gl map shell. Real railway data is not implemented yet.
         </p>
         <div className="panel-actions">
           <a className="health-link" href={healthHref}>

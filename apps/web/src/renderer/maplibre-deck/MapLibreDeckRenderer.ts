@@ -14,6 +14,9 @@ import {
   toSerializableViewState,
   type ViewStateSerializable,
 } from './view-state';
+import { buildRailwayLayers } from '../railway/layer-factory';
+import { SYNTHETIC_LINE_ID, syntheticRenderDataset } from '../railway/synthetic-render-dataset';
+import type { Selection, VisualizationState } from '../railway/render-types';
 
 export type MapRendererStatus =
   | 'checking'
@@ -28,6 +31,7 @@ export interface MapLibreDeckRendererOptions {
   basePath: string;
   onStatusChange(status: MapRendererStatus): void;
   onViewStateChange(viewState: ViewStateSerializable): void;
+  onSelectionChange(selection: Selection): void;
 }
 
 export class MapLibreDeckRenderer {
@@ -35,6 +39,14 @@ export class MapLibreDeckRenderer {
   #overlay: MapboxOverlay | null = null;
   #options: MapLibreDeckRendererOptions | null = null;
   #terrainEnabled = true;
+  #styleLoaded = false;
+  #visualization: VisualizationState = {
+    colorMode: 'line',
+    xrayMode: 'selected',
+    verticalExaggeration: 1,
+  };
+  #selection: Selection = { kind: 'line', id: SYNTHETIC_LINE_ID };
+  #hovered: Selection = null;
 
   mount(options: MapLibreDeckRendererOptions): void {
     if (this.#map !== null) {
@@ -43,6 +55,7 @@ export class MapLibreDeckRenderer {
 
     this.#options = options;
     this.#terrainEnabled = true;
+    this.#styleLoaded = false;
 
     const map = new maplibregl.Map({
       container: options.container,
@@ -83,6 +96,18 @@ export class MapLibreDeckRenderer {
 
     this.#map = map;
     this.#overlay = overlay;
+    this.#syncLayers();
+  }
+
+  setVisualization(visualization: VisualizationState): void {
+    this.#visualization = visualization;
+    this.#setTerrainExaggeration();
+    this.#syncLayers();
+  }
+
+  setSelection(selection: Selection): void {
+    this.#selection = selection;
+    this.#syncLayers();
   }
 
   flyToInitialView(options: { reducedMotion: boolean }): void {
@@ -131,6 +156,7 @@ export class MapLibreDeckRenderer {
     this.#map = null;
     this.#overlay = null;
     this.#options = null;
+    this.#styleLoaded = false;
   }
 
   get isMounted(): boolean {
@@ -138,6 +164,8 @@ export class MapLibreDeckRenderer {
   }
 
   #handleLoad = () => {
+    this.#styleLoaded = true;
+    this.#setTerrainExaggeration();
     this.#options?.onStatusChange('ready');
     this.#emitViewState();
   };
@@ -165,6 +193,8 @@ export class MapLibreDeckRenderer {
   };
 
   #handleContextRestored = () => {
+    this.#styleLoaded = this.#map?.isStyleLoaded() === true;
+    this.#setTerrainExaggeration();
     this.#options?.onStatusChange(this.#terrainEnabled ? 'ready' : 'terrain-fallback');
     this.#emitViewState();
   };
@@ -184,5 +214,42 @@ export class MapLibreDeckRenderer {
     }
 
     map.removeControl(overlay);
+  }
+
+  #setTerrainExaggeration(): void {
+    const map = this.#map;
+    if (!this.#terrainEnabled || map === null || !this.#styleLoaded) {
+      return;
+    }
+
+    map.setTerrain({
+      source: SYNTHETIC_DEM_SOURCE_ID,
+      exaggeration: this.#visualization.verticalExaggeration,
+    });
+  }
+
+  #syncLayers(): void {
+    this.#overlay?.setProps({
+      layers: buildRailwayLayers({
+        dataset: syntheticRenderDataset,
+        visualization: this.#visualization,
+        selection: this.#selection,
+        hovered: this.#hovered,
+        profileCursor:
+          syntheticRenderDataset.profileCursorByExaggeration[
+            this.#visualization.verticalExaggeration
+          ],
+        callbacks: {
+          onHover: (selection) => {
+            this.#hovered = selection;
+          },
+          onSelect: (selection) => {
+            this.#selection = selection;
+            this.#options?.onSelectionChange(selection);
+            this.#syncLayers();
+          },
+        },
+      }),
+    });
   }
 }

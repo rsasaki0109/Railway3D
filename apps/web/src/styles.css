@@ -81,12 +81,13 @@ a {
   gap: 0.35rem;
   padding: 0.75rem 0.9rem;
   font-size: 0.875rem;
+  overflow-wrap: anywhere;
 }
 
 .map-overlay-top {
-  right: 0.75rem;
+  right: 3.75rem;
   top: 0.75rem;
-  max-width: min(22rem, calc(100% - 1.5rem));
+  max-width: min(20rem, calc(100% - 4.5rem));
 }
 
 .map-overlay-bottom {
@@ -167,6 +168,17 @@ h2 {
   font-weight: 700;
 }
 
+.map-action[data-active='true'] {
+  background: #d8efe8;
+  color: #102820;
+}
+
+.segmented-control {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
 .health-link:focus-visible,
 .map-action:focus-visible {
   outline: 3px solid #b34d00;
@@ -190,7 +202,9 @@ h2 {
 
   .map-overlay-top {
     top: auto;
+    right: 0.75rem;
     bottom: 9rem;
+    max-width: calc(100% - 1.5rem);
   }
 
   .map-overlay-bottom {
