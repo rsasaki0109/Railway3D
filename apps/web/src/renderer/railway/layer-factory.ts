@@ -10,8 +10,10 @@ import {
   resolvePathWidth,
   resolveStationColor,
   resolveStationLineColor,
+  resolveUncertaintyCueColor,
   resolveXRayCoreColor,
   resolveXRayHaloColor,
+  shouldRenderUncertaintyCue,
 } from './style-resolver';
 
 function getPathAtCurrentExaggeration(ctx: LayerBuildContext) {
@@ -53,21 +55,45 @@ function selectStation(info: PickingInfo<RenderStation>, ctx: LayerBuildContext)
 export function buildRailwayLayers(ctx: LayerBuildContext): Layer[] {
   const selectedPaths = ctx.dataset.paths.filter((path) => isPathSelected(path, ctx.selection));
   const xrayPaths = filterXRayPaths(ctx.dataset.paths, ctx.visualization.xrayMode, ctx.selection);
+  const uncertaintyPaths = ctx.visualization.uncertaintyVisible
+    ? ctx.dataset.paths.filter(shouldRenderUncertaintyCue)
+    : [];
   const verticalGuides =
-    ctx.selection === null
+    ctx.selection === null || !ctx.visualization.guideVisible
       ? []
       : ctx.dataset.guides.filter((guide) =>
           selectedPaths.some((path) => path.segmentId === guide.segmentId),
         );
-  const profileCursorData = ctx.profileCursor === null ? [] : [ctx.profileCursor];
+  const profileCursorData =
+    ctx.profileCursor === null || !ctx.visualization.guideVisible ? [] : [ctx.profileCursor];
+  const stationData = ctx.visualization.stationVisible ? ctx.dataset.stations : [];
+  const stationLabelData =
+    ctx.visualization.stationVisible && ctx.visualization.labelVisible ? ctx.dataset.stations : [];
 
   return [
+    new PathLayer<RenderPath>({
+      id: 'uncertainty-cue',
+      data: uncertaintyPaths,
+      getPath: getPathAtCurrentExaggeration(ctx),
+      getColor: resolveUncertaintyCueColor,
+      getWidth: 11,
+      widthUnits: 'pixels',
+      widthMinPixels: 7,
+      widthMaxPixels: 16,
+      jointRounded: true,
+      capRounded: true,
+      pickable: false,
+      parameters: { depthCompare: 'always', depthWriteEnabled: false },
+      updateTriggers: {
+        getPath: [ctx.visualization.verticalExaggeration],
+      },
+    }),
     new PathLayer<RenderPath>({
       id: 'railway-physical',
       data: ctx.dataset.paths,
       getPath: getPathAtCurrentExaggeration(ctx),
       getColor: (path) => resolvePathColor(path, ctx.visualization),
-      getWidth: (path) => resolvePathWidth(path, ctx.selection),
+      getWidth: (path) => resolvePathWidth(path, ctx.selection, ctx.visualization),
       widthUnits: 'pixels',
       widthMinPixels: 2,
       widthMaxPixels: 10,
@@ -81,7 +107,7 @@ export function buildRailwayLayers(ctx: LayerBuildContext): Layer[] {
       updateTriggers: {
         getPath: [ctx.visualization.verticalExaggeration],
         getColor: [ctx.visualization.colorMode, ctx.selection?.id],
-        getWidth: [ctx.selection?.id],
+        getWidth: [ctx.selection?.id, ctx.visualization.uncertaintyVisible],
       },
     }),
     new PathLayer<RenderPath>({
@@ -120,7 +146,7 @@ export function buildRailwayLayers(ctx: LayerBuildContext): Layer[] {
     }),
     new ScatterplotLayer<RenderStation>({
       id: 'station-points',
-      data: ctx.dataset.stations,
+      data: stationData,
       getPosition: getStationAtCurrentExaggeration(ctx),
       getRadius: 8,
       radiusUnits: 'pixels',
@@ -141,7 +167,7 @@ export function buildRailwayLayers(ctx: LayerBuildContext): Layer[] {
     }),
     new TextLayer<RenderStation>({
       id: 'station-labels',
-      data: ctx.dataset.stations,
+      data: stationLabelData,
       getPosition: getStationAtCurrentExaggeration(ctx),
       getText: (station) => station.name,
       getSize: 13,

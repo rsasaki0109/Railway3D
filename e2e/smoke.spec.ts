@@ -13,13 +13,13 @@ async function selectSearchResult(page: Page, query: string) {
   await page.keyboard.press('Enter');
 }
 
-test('loads the PR-006 development build and metadata', async ({ page }) => {
+test('loads the PR-007 development build and metadata', async ({ page }) => {
   await page.goto('./');
 
   await expect(page.getByRole('heading', { name: 'Railway3D' })).toBeVisible();
   await expect(page.getByText('development build')).toBeVisible();
   await expect(
-    page.getByText('PR-006 adds synthetic search, selection, inspector, and share URL state'),
+    page.getByText('PR-007 adds visualization modes, legend, uncertainty cues, and layer controls'),
   ).toBeVisible();
   await expect(page.getByRole('link', { name: 'View build metadata' })).toBeVisible();
 
@@ -54,18 +54,62 @@ test('switches X-ray modes and vertical exaggeration', async ({ page }) => {
 
   await waitForMapReady(page);
   await expect(page.getByTestId('xray-status')).toContainText('selected · 1 path');
+  await expect(page.getByTestId('legend-badge-X-ray selected')).toBeVisible();
 
   await page.getByTestId('xray-off').click();
   await expect(page.getByTestId('xray-status')).toContainText('off · 0 paths');
 
   await page.getByTestId('xray-all-underground').click();
   await expect(page.getByTestId('xray-status')).toContainText('all-underground · 1 path');
+  await expect(page.getByTestId('legend-badge-X-ray all-underground')).toBeVisible();
 
   await page.getByTestId('vex-3').click();
   await expect(page.getByTestId('vex-status')).toContainText('Vertical ×3');
+  await expect(page.getByTestId('legend-badge-Vertical x3')).toBeVisible();
 
   await page.getByTestId('color-structure').click();
   await expect(page.getByTestId('color-structure')).toHaveAttribute('data-active', 'true');
+  await expect(page.getByTestId('legend-title')).toHaveText('Structure');
+});
+
+test('switches all visualization modes and updates the dynamic legend', async ({ page }) => {
+  await page.goto('./');
+  await waitForMapReady(page);
+
+  const modes = [
+    ['color-line', 'Line color'],
+    ['color-structure', 'Structure'],
+    ['color-clearance', 'Ground clearance'],
+    ['color-gradient', 'Gradient'],
+    ['color-confidence', 'Confidence'],
+  ] as const;
+
+  for (const [testId, title] of modes) {
+    await page.getByTestId(testId).click();
+    await expect(page.getByTestId(testId)).toHaveAttribute('data-active', 'true');
+    await expect(page.getByTestId('legend-title')).toHaveText(title);
+  }
+
+  await page.getByTestId('color-clearance').click();
+  await expect(page.getByText('Null clearance is not converted to zero.')).toBeVisible();
+});
+
+test('toggles layer and uncertainty controls from the layer panel', async ({ page }) => {
+  await page.goto('./');
+  await waitForMapReady(page);
+
+  await expect(page.getByTestId('layer-stations')).toBeChecked();
+  await expect(page.getByTestId('layer-labels')).toBeChecked();
+  await expect(page.getByTestId('layer-guides')).toBeChecked();
+  await expect(page.getByTestId('layer-uncertainty')).toBeChecked();
+  await expect(page.getByTestId('legend-badge-Uncertainty on')).toBeVisible();
+
+  await page.getByTestId('layer-uncertainty').uncheck();
+  await expect(page.getByTestId('layer-uncertainty')).not.toBeChecked();
+  await expect(page.getByTestId('legend-badge-Uncertainty off')).toBeVisible();
+
+  await page.getByTestId('layer-labels').uncheck();
+  await expect(page.getByTestId('layer-labels')).not.toBeChecked();
 });
 
 test('supports keyboard search, selection, and clear', async ({ page }) => {

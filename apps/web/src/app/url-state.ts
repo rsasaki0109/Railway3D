@@ -33,7 +33,16 @@ function isEntityId(value: string | null): value is EntityId {
 }
 
 function parseColorMode(value: string | null, fallback: ColorMode): ColorMode {
-  return value === 'line' || value === 'structure' ? value : fallback;
+  switch (value) {
+    case 'line':
+    case 'structure':
+    case 'clearance':
+    case 'gradient':
+    case 'confidence':
+      return value;
+    default:
+      return fallback;
+  }
 }
 
 function parseXRayMode(value: string | null, fallback: XRayMode): XRayMode {
@@ -64,6 +73,18 @@ function parseVerticalExaggeration(
     default:
       return fallback;
   }
+}
+
+function parseBooleanFlag(value: string | null, fallback: boolean): boolean {
+  if (value === '1' || value === 'true') {
+    return true;
+  }
+
+  if (value === '0' || value === 'false') {
+    return false;
+  }
+
+  return fallback;
 }
 
 export function clampViewState(view: ViewStateSerializable): ViewStateSerializable {
@@ -120,6 +141,16 @@ export function parseUrlState(hash: string, fallback: AppState = createAppState(
         params.get('vex'),
         fallback.visualization.verticalExaggeration,
       ),
+      stationVisible: parseBooleanFlag(
+        params.get('stations'),
+        fallback.visualization.stationVisible,
+      ),
+      labelVisible: parseBooleanFlag(params.get('labels'), fallback.visualization.labelVisible),
+      guideVisible: parseBooleanFlag(params.get('guides'), fallback.visualization.guideVisible),
+      uncertaintyVisible: parseBooleanFlag(
+        params.get('uncertainty'),
+        fallback.visualization.uncertaintyVisible,
+      ),
     },
     selection: parseSelection(params, fallback.selection),
   });
@@ -147,6 +178,10 @@ export function serializeUrlState(state: AppState): string {
     state.visualization.xrayMode === 'all-underground' ? 'all' : state.visualization.xrayMode,
   );
   params.set('vex', String(state.visualization.verticalExaggeration));
+  params.set('stations', state.visualization.stationVisible ? '1' : '0');
+  params.set('labels', state.visualization.labelVisible ? '1' : '0');
+  params.set('guides', state.visualization.guideVisible ? '1' : '0');
+  params.set('uncertainty', state.visualization.uncertaintyVisible ? '1' : '0');
 
   const camera = [
     formatNumber(view.latitude, 5),

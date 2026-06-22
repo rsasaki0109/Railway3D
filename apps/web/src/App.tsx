@@ -1,6 +1,8 @@
 import { AppStoreProvider } from './app/app-store';
 import { readInitialAppState, UrlStateSync } from './app/UrlStateSync';
 import { FeatureInspector } from './features/inspector/FeatureInspector';
+import { LayerPanel } from './features/layers/LayerPanel';
+import { Legend } from './features/legend/Legend';
 import { MapViewport } from './features/map/MapViewport';
 import { SearchCommand } from './features/search/SearchCommand';
 
@@ -26,12 +28,14 @@ export function App() {
             <p className="eyebrow">Static-first 3D Railway Geospatial Platform</p>
             <h1 id="app-title">Railway3D</h1>
             <p id="app-summary" className="summary">
-              {getBuildStatusText()}. PR-006 adds synthetic search, selection, inspector, and share
-              URL state. Real railway data is not implemented yet.
+              {getBuildStatusText()}. PR-007 adds visualization modes, legend, uncertainty cues, and
+              layer controls. Real railway data is not implemented yet.
             </p>
           </div>
           <SearchCommand />
           <FeatureInspector />
+          <Legend />
+          <LayerPanel />
           <div className="panel-actions">
             <a className="health-link" href={healthHref}>
               View build metadata

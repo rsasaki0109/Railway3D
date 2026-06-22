@@ -20,7 +20,13 @@ import { syntheticRenderDataset } from '../../renderer/railway/synthetic-render-
 
 const basePath = import.meta.env.BASE_URL;
 const xrayModes = ['off', 'selected', 'all-underground'] as const satisfies readonly XRayMode[];
-const colorModes = ['line', 'structure'] as const satisfies readonly ColorMode[];
+const colorModes = [
+  'line',
+  'structure',
+  'clearance',
+  'gradient',
+  'confidence',
+] as const satisfies readonly ColorMode[];
 
 function prefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;

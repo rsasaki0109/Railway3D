@@ -5,7 +5,7 @@ import { clampViewState, parseUrlState, serializeUrlState } from './url-state';
 
 describe('url-state', () => {
   it('clamps unsafe camera values and falls back for unsupported params', () => {
-    const parsed = parseUrlState('#/@999,999,99,99,999?mode=gradient&xray=bad&vex=99&line=bad');
+    const parsed = parseUrlState('#/@999,999,99,99,999?mode=bad&xray=bad&vex=99&line=bad');
 
     expect(parsed.view).toEqual({
       latitude: 85,
@@ -30,15 +30,23 @@ describe('url-state', () => {
         bearing: -12.3,
       },
       visualization: {
-        colorMode: 'structure',
+        colorMode: 'confidence',
         xrayMode: 'all-underground',
         verticalExaggeration: 3,
+        stationVisible: false,
+        labelVisible: true,
+        guideVisible: false,
+        uncertaintyVisible: false,
       },
       selection: { kind: 'line', id: 'r3d:zz:synthetic:line:golden' },
     });
 
     const hash = serializeUrlState(state);
     expect(hash).toContain('xray=all');
+    expect(hash).toContain('mode=confidence');
+    expect(hash).toContain('stations=0');
+    expect(hash).toContain('guides=0');
+    expect(hash).toContain('uncertainty=0');
     expect(parseUrlState(hash).visualization).toEqual(state.visualization);
     expect(parseUrlState(hash).selection).toEqual(state.selection);
   });

@@ -55,6 +55,10 @@ export class MapLibreDeckRenderer {
     colorMode: 'line',
     xrayMode: 'selected',
     verticalExaggeration: 1,
+    stationVisible: true,
+    labelVisible: true,
+    guideVisible: true,
+    uncertaintyVisible: true,
   };
   #selection: Selection = { kind: 'line', id: SYNTHETIC_LINE_ID };
   #hovered: Selection = null;

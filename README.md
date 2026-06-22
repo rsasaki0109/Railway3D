@@ -11,8 +11,8 @@ Static-first 3D railway geospatial platform.
 This repository is in early bootstrap. The current site is a development build
 that verifies the workspace, static deployment path, test setup, schema/domain
 foundation, data-client skeleton, MapLibre/deck.gl map shell, and synthetic
-railway rendering/search/selection layers. It does not render real railway data
-yet.
+railway rendering/search/selection layers, visualization modes, dynamic legend,
+and layer controls. It does not render real railway data yet.
 
 Implemented milestones:
 
@@ -33,6 +33,9 @@ Implemented milestones:
 - PR-006: app state store, share URL parser/serializer, synthetic search index,
   keyboard search command, line/station selection, inspector skeleton, and
   browser back/forward restoration.
+- PR-007: five visualization modes, style resolver tests, dynamic legend,
+  uncertainty cue layer, vertical/X-ray state badges, and layer visibility
+  controls.
 
 ## Local Development
 

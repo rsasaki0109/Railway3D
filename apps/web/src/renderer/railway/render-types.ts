@@ -17,7 +17,7 @@ export type StructureType =
 
 export type ConfidenceLevel = 'unknown' | 'low' | 'medium' | 'high' | 'verified';
 
-export type ColorMode = 'line' | 'structure';
+export type ColorMode = 'line' | 'structure' | 'clearance' | 'gradient' | 'confidence';
 export type XRayMode = 'off' | 'selected' | 'all-underground';
 export type VerticalExaggeration = 1 | 2 | 3 | 5;
 
@@ -31,6 +31,10 @@ export interface VisualizationState {
   colorMode: ColorMode;
   xrayMode: XRayMode;
   verticalExaggeration: VerticalExaggeration;
+  stationVisible: boolean;
+  labelVisible: boolean;
+  guideVisible: boolean;
+  uncertaintyVisible: boolean;
 }
 
 export interface ProfileCursor {

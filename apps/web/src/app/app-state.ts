@@ -36,6 +36,10 @@ export const DEFAULT_VISUALIZATION: VisualizationState = {
   colorMode: 'line',
   xrayMode: 'selected',
   verticalExaggeration: 1,
+  stationVisible: true,
+  labelVisible: true,
+  guideVisible: true,
+  uncertaintyVisible: true,
 };
 
 export const DEFAULT_SELECTION: Selection = { kind: 'line', id: SYNTHETIC_LINE_ID };
