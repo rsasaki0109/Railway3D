@@ -43,6 +43,13 @@ def test_dangling_reference_is_rejected() -> None:
     assert "DANGLING_REFERENCE" in issue_codes(dataset)
 
 
+def test_dangling_source_reference_is_rejected() -> None:
+    dataset = copy.deepcopy(load_fixture())
+    dataset["profiles"][0]["samples"][0]["provenance"][0]["sourceId"] = "synthetic-missing"
+
+    assert "DANGLING_SOURCE_REFERENCE" in issue_codes(dataset)
+
+
 def test_high_confidence_without_provenance_is_rejected() -> None:
     dataset = copy.deepcopy(load_fixture())
     dataset["profiles"][0]["samples"][1]["provenance"] = []

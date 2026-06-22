@@ -57,7 +57,7 @@ def validate_dataset_semantics(dataset: dict[str, Any]) -> list[ValidationIssue]
     segment_ids = collect_ids(dataset["segments"], "/segments", issues)
     station_ids = collect_ids(dataset["stations"], "/stations", issues)
     profile_ids = collect_ids(dataset["profiles"], "/profiles", issues)
-    collect_ids(dataset["sources"], "/sources", issues)
+    source_ids = collect_ids(dataset["sources"], "/sources", issues)
     collect_ids(dataset["controlPoints"], "/controlPoints", issues)
 
     segment_by_id = {segment["id"]: segment for segment in dataset["segments"]}
@@ -104,6 +104,7 @@ def validate_dataset_semantics(dataset: dict[str, Any]) -> list[ValidationIssue]
         }[profile["ownerType"]]
         expect_ref(profile["ownerId"], owner_ids, f"/profiles/{index}/ownerId", issues)
         validate_monotonic_samples(profile, index, issues)
+        validate_profile_vertical_values(profile, index, issues)
 
     for index, control_point in enumerate(dataset["controlPoints"]):
         if not control_point["hardConstraint"] or "railElevation" not in control_point:
@@ -137,6 +138,8 @@ def validate_dataset_semantics(dataset: dict[str, Any]) -> list[ValidationIssue]
                     f"Hard control point {control_point['id']} does not match its profile sample.",
                 )
             )
+
+    validate_source_references(dataset, source_ids, issues)
 
     return issues
 
@@ -178,6 +181,55 @@ def validate_monotonic_samples(
                     f"Profile {profile['id']} chainage must be strictly increasing.",
                 )
             )
+
+
+def validate_profile_vertical_values(
+    profile: dict[str, Any], profile_index: int, issues: list[ValidationIssue]
+) -> None:
+    datum = profile["verticalDatum"]
+    for sample_index, sample in enumerate(profile["samples"]):
+        rail = sample["railElevationM"]
+        ground = sample["groundElevationM"]
+        clearance = sample["clearanceM"]
+        if datum == "UNKNOWN" and rail is not None and ground is not None and clearance is not None:
+            issues.append(
+                ValidationIssue(
+                    "VERTICAL_DATUM_UNKNOWN_DEPTH",
+                    f"/profiles/{profile_index}/samples/{sample_index}/clearanceM",
+                    f"Profile {profile['id']} uses UNKNOWN vertical datum for clearance calculation.",
+                )
+            )
+            continue
+        if rail is not None and ground is not None and clearance is not None:
+            expected = rail - ground
+            if abs(clearance - expected) > 1e-6:
+                issues.append(
+                    ValidationIssue(
+                        "CLEARANCE_MISMATCH",
+                        f"/profiles/{profile_index}/samples/{sample_index}/clearanceM",
+                        f"Clearance must equal railElevationM - groundElevationM for profile {profile['id']}.",
+                    )
+                )
+
+
+def validate_source_references(
+    value: Any, source_ids: set[str], issues: list[ValidationIssue], path: str = ""
+) -> None:
+    if isinstance(value, dict):
+        source_id = value.get("sourceId")
+        if isinstance(source_id, str) and source_id not in source_ids:
+            issues.append(
+                ValidationIssue(
+                    "DANGLING_SOURCE_REFERENCE",
+                    f"{path}/sourceId" if path else "/sourceId",
+                    f"Dangling source reference: {source_id}",
+                )
+            )
+        for key, child in value.items():
+            validate_source_references(child, source_ids, issues, f"{path}/{key}" if path else f"/{key}")
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            validate_source_references(child, source_ids, issues, f"{path}/{index}" if path else f"/{index}")
 
 
 def validate_route_continuity(

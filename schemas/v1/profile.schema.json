@@ -16,7 +16,7 @@
       "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/entityId"
     },
     "verticalDatum": {
-      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/knownVerticalDatum"
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/verticalDatum"
     },
     "sampleIntervalTargetM": {
       "type": "number",
