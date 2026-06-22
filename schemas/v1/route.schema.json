@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://railway3d.dev/schemas/v1/route.schema.json",
+  "title": "RailwayRoute",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/entityId"
+    },
+    "lineId": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/entityId"
+    },
+    "name": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/localizedText"
+    },
+    "direction": {
+      "type": "string",
+      "enum": ["inbound", "outbound", "clockwise", "counterclockwise", "both"]
+    },
+    "segmentRefs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "segmentId": {
+            "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/entityId"
+          },
+          "forward": {
+            "type": "boolean"
+          },
+          "fromChainageM": {
+            "type": "number",
+            "minimum": 0
+          },
+          "toChainageM": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": ["segmentId", "forward", "fromChainageM", "toChainageM"]
+      }
+    },
+    "stationSequence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "stationId": {
+            "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/entityId"
+          },
+          "chainageM": {
+            "type": "number",
+            "minimum": 0
+          },
+          "stopOrder": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "platformLevelId": {
+            "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/entityId"
+          }
+        },
+        "required": ["stationId", "chainageM", "stopOrder"]
+      }
+    },
+    "lengthM": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "profileAssetId": {
+      "type": "string"
+    }
+  },
+  "required": ["id", "lineId", "segmentRefs", "stationSequence", "lengthM"]
+}

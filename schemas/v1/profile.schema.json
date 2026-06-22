@@ -1,0 +1,231 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://railway3d.dev/schemas/v1/profile.schema.json",
+  "title": "ElevationProfile",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/entityId"
+    },
+    "ownerType": {
+      "type": "string",
+      "enum": ["segment", "route", "alignment"]
+    },
+    "ownerId": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/entityId"
+    },
+    "verticalDatum": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/knownVerticalDatum"
+    },
+    "sampleIntervalTargetM": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "totalLengthM": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "samples": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "chainageM": {
+            "type": "number",
+            "minimum": 0
+          },
+          "position": {
+            "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/lngLat"
+          },
+          "railElevationM": {
+            "type": ["number", "null"]
+          },
+          "groundElevationM": {
+            "type": ["number", "null"]
+          },
+          "clearanceM": {
+            "type": ["number", "null"]
+          },
+          "gradientPermille": {
+            "type": ["number", "null"]
+          },
+          "curvatureRadiusM": {
+            "type": ["number", "null"]
+          },
+          "structure": {
+            "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/structureType"
+          },
+          "confidence": {
+            "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/confidence"
+          },
+          "uncertaintyM": {
+            "type": "number",
+            "minimum": 0
+          },
+          "method": {
+            "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/measurementMethod"
+          },
+          "provenance": {
+            "type": "array",
+            "items": {
+              "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/provenanceRef"
+            }
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/qualityFlag"
+            }
+          }
+        },
+        "required": [
+          "chainageM",
+          "position",
+          "railElevationM",
+          "groundElevationM",
+          "clearanceM",
+          "gradientPermille",
+          "structure",
+          "confidence",
+          "method",
+          "provenance",
+          "flags"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "confidence": {
+                  "enum": ["high", "verified"]
+                }
+              },
+              "required": ["confidence"]
+            },
+            "then": {
+              "properties": {
+                "provenance": {
+                  "type": "array",
+                  "minItems": 1
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "method": {
+                  "enum": [
+                    "surveyed",
+                    "official_longitudinal_profile",
+                    "operator_published",
+                    "government_open_data",
+                    "community_verified"
+                  ]
+                }
+              },
+              "required": ["method"]
+            },
+            "then": {
+              "properties": {
+                "provenance": {
+                  "type": "array",
+                  "minItems": 1
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "solver": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "algorithm": {
+          "const": "weighted-constrained-smoothing-v1"
+        },
+        "solverVersion": {
+          "type": "string"
+        },
+        "controlPointCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "hardConstraintCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxInterpolationSpanM": {
+          "type": "number",
+          "minimum": 0
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": {
+            "type": ["number", "string", "boolean"]
+          }
+        }
+      },
+      "required": [
+        "algorithm",
+        "solverVersion",
+        "controlPointCount",
+        "hardConstraintCount",
+        "maxInterpolationSpanM",
+        "parameters"
+      ]
+    },
+    "aggregateQuality": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "knownRailElevationRatio": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "publishedControlCoverageRatio": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "maxUncertaintyM": {
+          "type": "number",
+          "minimum": 0
+        },
+        "meanUncertaintyM": {
+          "type": "number",
+          "minimum": 0
+        },
+        "confidence": {
+          "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/confidence"
+        },
+        "flags": {
+          "type": "array",
+          "items": {
+            "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/qualityFlag"
+          }
+        }
+      },
+      "required": [
+        "knownRailElevationRatio",
+        "publishedControlCoverageRatio",
+        "confidence",
+        "flags"
+      ]
+    }
+  },
+  "required": [
+    "id",
+    "ownerType",
+    "ownerId",
+    "verticalDatum",
+    "sampleIntervalTargetM",
+    "totalLengthM",
+    "samples",
+    "aggregateQuality"
+  ]
+}

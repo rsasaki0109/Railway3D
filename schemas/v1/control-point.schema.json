@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://railway3d.dev/schemas/v1/control-point.schema.json",
+  "title": "ElevationControlPoint",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/entityId"
+    },
+    "ownerId": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/entityId"
+    },
+    "chainageM": {
+      "type": "number",
+      "minimum": 0
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "rail_elevation",
+        "platform_elevation",
+        "relative_depth",
+        "portal",
+        "grade_break",
+        "structure_boundary"
+      ]
+    },
+    "railElevation": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/elevationValue"
+    },
+    "relativeDepthM": {
+      "type": "number"
+    },
+    "groundReference": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/elevationValue"
+    },
+    "gradientPermille": {
+      "type": "number"
+    },
+    "hardConstraint": {
+      "type": "boolean"
+    },
+    "note": {
+      "type": "string"
+    }
+  },
+  "required": ["id", "ownerId", "chainageM", "kind", "hardConstraint"]
+}

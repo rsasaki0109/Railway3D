@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://railway3d.dev/schemas/v1/dataset.schema.json",
+  "title": "Railway3DDataset",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "manifest": {
+      "$ref": "https://railway3d.dev/schemas/v1/manifest.schema.json"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "https://railway3d.dev/schemas/v1/source.schema.json"
+      }
+    },
+    "operators": {
+      "type": "array",
+      "items": {
+        "$ref": "https://railway3d.dev/schemas/v1/operator.schema.json"
+      }
+    },
+    "lines": {
+      "type": "array",
+      "items": {
+        "$ref": "https://railway3d.dev/schemas/v1/line.schema.json"
+      }
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "$ref": "https://railway3d.dev/schemas/v1/route.schema.json"
+      }
+    },
+    "alignments": {
+      "type": "array",
+      "items": {
+        "$ref": "https://railway3d.dev/schemas/v1/alignment.schema.json"
+      }
+    },
+    "segments": {
+      "type": "array",
+      "items": {
+        "$ref": "https://railway3d.dev/schemas/v1/segment.schema.json"
+      }
+    },
+    "stations": {
+      "type": "array",
+      "items": {
+        "$ref": "https://railway3d.dev/schemas/v1/station.schema.json"
+      }
+    },
+    "profiles": {
+      "type": "array",
+      "items": {
+        "$ref": "https://railway3d.dev/schemas/v1/profile.schema.json"
+      }
+    },
+    "controlPoints": {
+      "type": "array",
+      "items": {
+        "$ref": "https://railway3d.dev/schemas/v1/control-point.schema.json"
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "manifest",
+    "sources",
+    "operators",
+    "lines",
+    "routes",
+    "alignments",
+    "segments",
+    "stations",
+    "profiles",
+    "controlPoints"
+  ]
+}

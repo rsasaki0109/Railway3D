@@ -1,0 +1,209 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://railway3d.dev/schemas/v1/manifest.schema.json",
+  "title": "Railway3DDatasetManifest",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "datasetId": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/datasetId"
+    },
+    "datasetVersion": {
+      "type": "string"
+    },
+    "title": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/localizedText"
+    },
+    "description": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/localizedText"
+    },
+    "regionCodes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "bounds": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/bbox"
+    },
+    "horizontalCrs": {
+      "const": "EPSG:4326"
+    },
+    "canonicalVerticalDatum": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/verticalDatum"
+    },
+    "generatedAt": {
+      "type": "string"
+    },
+    "sourceSnapshotAt": {
+      "type": "string"
+    },
+    "generator": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "const": "railway3d-pipeline"
+        },
+        "version": {
+          "type": "string"
+        },
+        "gitCommit": {
+          "type": "string"
+        },
+        "configChecksum": {
+          "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/sha256"
+        }
+      },
+      "required": ["name", "version", "gitCommit", "configChecksum"]
+    },
+    "sourceIds": {
+      "type": "array",
+      "items": {
+        "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/sourceId"
+      }
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "catalog",
+              "metadata",
+              "geometry-json",
+              "profile-json",
+              "mvt",
+              "pmtiles",
+              "terrain-rgb",
+              "3d-tiles",
+              "search-index"
+            ]
+          },
+          "href": {
+            "type": "string",
+            "minLength": 1
+          },
+          "mediaType": {
+            "type": "string",
+            "minLength": 1
+          },
+          "encoding": {
+            "type": "string",
+            "enum": ["gzip", "br", "identity"]
+          },
+          "byteLength": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "checksum": {
+            "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/sha256"
+          },
+          "bounds": {
+            "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/bbox"
+          },
+          "minZoom": {
+            "type": "number"
+          },
+          "maxZoom": {
+            "type": "number"
+          }
+        },
+        "required": ["id", "kind", "href", "mediaType", "checksum"]
+      }
+    },
+    "entityCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "operators": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "lines": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "routes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "alignments": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "segments": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stations": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "profileSamples": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "operators",
+        "lines",
+        "routes",
+        "alignments",
+        "segments",
+        "stations",
+        "profileSamples"
+      ]
+    },
+    "attributionHtml": {
+      "type": "string"
+    },
+    "notices": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "minAppVersion": {
+          "type": "string"
+        },
+        "maxSchemaMajor": {
+          "const": 1
+        }
+      },
+      "required": ["minAppVersion", "maxSchemaMajor"]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "datasetId",
+    "datasetVersion",
+    "title",
+    "description",
+    "regionCodes",
+    "bounds",
+    "horizontalCrs",
+    "canonicalVerticalDatum",
+    "generatedAt",
+    "generator",
+    "sourceIds",
+    "assets",
+    "entityCounts",
+    "attributionHtml",
+    "notices",
+    "compatibility"
+  ]
+}

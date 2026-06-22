@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://railway3d.dev/schemas/v1/alignment.schema.json",
+  "title": "TrackAlignment",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/entityId"
+    },
+    "name": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/localizedText"
+    },
+    "role": {
+      "type": "string",
+      "enum": ["representative_centerline", "track", "paired_tracks", "branch"]
+    },
+    "trackNumber": {
+      "type": "string"
+    },
+    "gaugeMm": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "segmentIds": {
+      "type": "array",
+      "items": {
+        "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/entityId"
+      }
+    },
+    "sourceRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/provenanceRef"
+      }
+    }
+  },
+  "required": ["id", "role", "segmentIds", "sourceRefs"]
+}

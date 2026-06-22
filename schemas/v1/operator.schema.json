@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://railway3d.dev/schemas/v1/operator.schema.json",
+  "title": "RailwayOperator",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/entityId"
+    },
+    "name": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/localizedText"
+    },
+    "shortName": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/localizedText"
+    },
+    "countryCode": {
+      "type": "string",
+      "minLength": 2
+    },
+    "website": {
+      "type": "string"
+    },
+    "sourceRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/provenanceRef"
+      }
+    }
+  },
+  "required": ["id", "name", "countryCode", "sourceRefs"]
+}

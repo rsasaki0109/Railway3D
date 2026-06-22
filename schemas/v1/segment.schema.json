@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://railway3d.dev/schemas/v1/segment.schema.json",
+  "title": "RailwaySegment",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/entityId"
+    },
+    "alignmentId": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/entityId"
+    },
+    "from": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "nodeId": {
+          "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/entityId"
+        },
+        "position": {
+          "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/lngLat"
+        }
+      },
+      "required": ["nodeId", "position"]
+    },
+    "to": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "nodeId": {
+          "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/entityId"
+        },
+        "position": {
+          "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/lngLat"
+        }
+      },
+      "required": ["nodeId", "position"]
+    },
+    "geometry": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/lineStringGeometry"
+    },
+    "lengthM": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "structure": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/structureType"
+    },
+    "serviceStatus": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/serviceStatus"
+    },
+    "trackCount": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "gaugeMm": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "electrification": {
+      "type": "string"
+    },
+    "profileId": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/entityId"
+    },
+    "sourceRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/provenanceRef"
+      }
+    },
+    "qualityFlags": {
+      "type": "array",
+      "items": {
+        "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/qualityFlag"
+      }
+    },
+    "validFrom": {
+      "type": "string"
+    },
+    "validTo": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "alignmentId",
+    "from",
+    "to",
+    "geometry",
+    "lengthM",
+    "structure",
+    "serviceStatus",
+    "profileId",
+    "sourceRefs",
+    "qualityFlags"
+  ]
+}

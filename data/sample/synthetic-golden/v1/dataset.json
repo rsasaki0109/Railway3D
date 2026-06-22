@@ -1,0 +1,921 @@
+{
+  "schemaVersion": "1.0.0",
+  "manifest": {
+    "schemaVersion": "1.0.0",
+    "datasetId": "synthetic-golden",
+    "datasetVersion": "0.1.0-fixture",
+    "title": {
+      "en": "Synthetic Golden Fixture"
+    },
+    "description": {
+      "en": "Fully synthetic Railway3D fixture for schema and validator development."
+    },
+    "regionCodes": ["fixture"],
+    "bounds": [0, -0.01, 0.03, 0.01],
+    "horizontalCrs": "EPSG:4326",
+    "canonicalVerticalDatum": "LOCAL_ENGINEERING_DATUM",
+    "generatedAt": "2026-06-22T00:00:00Z",
+    "sourceSnapshotAt": "2026-06-22T00:00:00Z",
+    "generator": {
+      "name": "railway3d-pipeline",
+      "version": "0.0.0",
+      "gitCommit": "bootstrap-fixture",
+      "configChecksum": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "sourceIds": ["synthetic-authoring-2026-06", "synthetic-review-2026-06"],
+    "assets": [],
+    "entityCounts": {
+      "operators": 1,
+      "lines": 1,
+      "routes": 2,
+      "alignments": 1,
+      "segments": 6,
+      "stations": 3,
+      "profileSamples": 10
+    },
+    "attributionHtml": "Synthetic fixture authored for Railway3D tests; no external source data.",
+    "notices": [
+      "Synthetic fixture only. It is not real railway data and must not be used for navigation, surveying, operations, or construction."
+    ],
+    "compatibility": {
+      "minAppVersion": "0.1.0",
+      "maxSchemaMajor": 1
+    }
+  },
+  "sources": [
+    {
+      "id": "synthetic-authoring-2026-06",
+      "title": "Railway3D synthetic fixture authoring notes",
+      "publisher": "Railway3D project",
+      "description": "Hand-authored artificial topology, elevations, and DEM-like ground samples.",
+      "license": {
+        "id": "CC0-1.0",
+        "name": "Creative Commons Zero 1.0",
+        "SPDX": "CC0-1.0",
+        "attributionRequired": false,
+        "shareAlike": false,
+        "commercialUseAllowed": true,
+        "redistributionAllowed": true,
+        "notice": "Synthetic fixture; no external source data."
+      },
+      "retrievedAt": "2026-06-22T00:00:00Z",
+      "sourceValidAt": "2026-06-22",
+      "checksum": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "citationText": "Railway3D synthetic fixture authoring notes, 2026-06-22.",
+      "processingNotes": ["Created solely for tests; not derived from real geography."]
+    },
+    {
+      "id": "synthetic-review-2026-06",
+      "title": "Railway3D synthetic conflict review notes",
+      "publisher": "Railway3D project",
+      "description": "Deliberately conflicting synthetic structure note used to exercise conflict flags.",
+      "license": {
+        "id": "CC0-1.0",
+        "name": "Creative Commons Zero 1.0",
+        "SPDX": "CC0-1.0",
+        "attributionRequired": false,
+        "shareAlike": false,
+        "commercialUseAllowed": true,
+        "redistributionAllowed": true,
+        "notice": "Synthetic fixture; no external source data."
+      },
+      "retrievedAt": "2026-06-22T00:00:00Z",
+      "sourceValidAt": "2026-06-22",
+      "checksum": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "citationText": "Railway3D synthetic conflict review notes, 2026-06-22.",
+      "processingNotes": ["Intentionally conflicts with the authored bridge structure."]
+    }
+  ],
+  "operators": [
+    {
+      "id": "r3d:zz:synthetic:operator:fixture-rail",
+      "name": {
+        "en": "Fixture Rail"
+      },
+      "shortName": {
+        "en": "FR"
+      },
+      "countryCode": "ZZ",
+      "sourceRefs": [
+        {
+          "sourceId": "synthetic-authoring-2026-06",
+          "method": "digitized",
+          "sourceFeatureId": "operator.fixture-rail"
+        }
+      ]
+    }
+  ],
+  "lines": [
+    {
+      "id": "r3d:zz:synthetic:line:golden",
+      "operatorIds": ["r3d:zz:synthetic:operator:fixture-rail"],
+      "name": {
+        "en": "Golden Fixture Line"
+      },
+      "publicCode": "G",
+      "color": "#2F6F73",
+      "textColor": "#FFFFFF",
+      "routeIds": ["r3d:zz:synthetic:route:main", "r3d:zz:synthetic:route:branch-b"],
+      "serviceStatus": "operational",
+      "sourceRefs": [
+        {
+          "sourceId": "synthetic-authoring-2026-06",
+          "method": "digitized",
+          "sourceFeatureId": "line.golden"
+        }
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "id": "r3d:zz:synthetic:route:main",
+      "lineId": "r3d:zz:synthetic:line:golden",
+      "name": {
+        "en": "Station A to Station C"
+      },
+      "direction": "outbound",
+      "segmentRefs": [
+        {
+          "segmentId": "r3d:zz:synthetic:segment:s01-underground",
+          "forward": true,
+          "fromChainageM": 0,
+          "toChainageM": 700
+        },
+        {
+          "segmentId": "r3d:zz:synthetic:segment:s02-surface",
+          "forward": true,
+          "fromChainageM": 700,
+          "toChainageM": 1200
+        },
+        {
+          "segmentId": "r3d:zz:synthetic:segment:s03-viaduct",
+          "forward": true,
+          "fromChainageM": 1200,
+          "toChainageM": 2000
+        },
+        {
+          "segmentId": "r3d:zz:synthetic:segment:s04-bridge",
+          "forward": true,
+          "fromChainageM": 2000,
+          "toChainageM": 2400
+        },
+        {
+          "segmentId": "r3d:zz:synthetic:segment:s05-unknown",
+          "forward": true,
+          "fromChainageM": 2400,
+          "toChainageM": 3000
+        }
+      ],
+      "stationSequence": [
+        {
+          "stationId": "r3d:zz:synthetic:station:A",
+          "chainageM": 0,
+          "stopOrder": 0,
+          "platformLevelId": "r3d:zz:synthetic:station-level:A-track"
+        },
+        {
+          "stationId": "r3d:zz:synthetic:station:C",
+          "chainageM": 3000,
+          "stopOrder": 1,
+          "platformLevelId": "r3d:zz:synthetic:station-level:C-track"
+        }
+      ],
+      "lengthM": 3000
+    },
+    {
+      "id": "r3d:zz:synthetic:route:branch-b",
+      "lineId": "r3d:zz:synthetic:line:golden",
+      "name": {
+        "en": "Portal to Station B"
+      },
+      "direction": "both",
+      "segmentRefs": [
+        {
+          "segmentId": "r3d:zz:synthetic:segment:s06-branch-b",
+          "forward": true,
+          "fromChainageM": 0,
+          "toChainageM": 900
+        }
+      ],
+      "stationSequence": [
+        {
+          "stationId": "r3d:zz:synthetic:station:B",
+          "chainageM": 900,
+          "stopOrder": 0,
+          "platformLevelId": "r3d:zz:synthetic:station-level:B-track"
+        }
+      ],
+      "lengthM": 900
+    }
+  ],
+  "alignments": [
+    {
+      "id": "r3d:zz:synthetic:alignment:golden-centerline",
+      "name": {
+        "en": "Golden fixture representative centerline"
+      },
+      "role": "representative_centerline",
+      "gaugeMm": 1435,
+      "segmentIds": [
+        "r3d:zz:synthetic:segment:s01-underground",
+        "r3d:zz:synthetic:segment:s02-surface",
+        "r3d:zz:synthetic:segment:s03-viaduct",
+        "r3d:zz:synthetic:segment:s04-bridge",
+        "r3d:zz:synthetic:segment:s05-unknown",
+        "r3d:zz:synthetic:segment:s06-branch-b"
+      ],
+      "sourceRefs": [
+        {
+          "sourceId": "synthetic-authoring-2026-06",
+          "method": "digitized",
+          "sourceFeatureId": "alignment.golden-centerline"
+        }
+      ]
+    }
+  ],
+  "segments": [
+    {
+      "id": "r3d:zz:synthetic:segment:s01-underground",
+      "alignmentId": "r3d:zz:synthetic:alignment:golden-centerline",
+      "from": {
+        "nodeId": "r3d:zz:synthetic:node:A",
+        "position": [0, 0]
+      },
+      "to": {
+        "nodeId": "r3d:zz:synthetic:node:portal",
+        "position": [0.006, 0]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [0, 0],
+          [0.003, 0],
+          [0.006, 0]
+        ]
+      },
+      "lengthM": 700,
+      "structure": "underground_tunnel",
+      "serviceStatus": "operational",
+      "trackCount": 2,
+      "gaugeMm": 1435,
+      "profileId": "r3d:zz:synthetic:profile:main",
+      "sourceRefs": [
+        {
+          "sourceId": "synthetic-authoring-2026-06",
+          "method": "digitized",
+          "sourceFeatureId": "segment.s01"
+        }
+      ],
+      "qualityFlags": []
+    },
+    {
+      "id": "r3d:zz:synthetic:segment:s02-surface",
+      "alignmentId": "r3d:zz:synthetic:alignment:golden-centerline",
+      "from": {
+        "nodeId": "r3d:zz:synthetic:node:portal",
+        "position": [0.006, 0]
+      },
+      "to": {
+        "nodeId": "r3d:zz:synthetic:node:surface-end",
+        "position": [0.01, 0]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [0.006, 0],
+          [0.008, 0],
+          [0.01, 0]
+        ]
+      },
+      "lengthM": 500,
+      "structure": "surface",
+      "serviceStatus": "operational",
+      "trackCount": 2,
+      "gaugeMm": 1435,
+      "profileId": "r3d:zz:synthetic:profile:main",
+      "sourceRefs": [
+        {
+          "sourceId": "synthetic-authoring-2026-06",
+          "method": "digitized",
+          "sourceFeatureId": "segment.s02"
+        }
+      ],
+      "qualityFlags": []
+    },
+    {
+      "id": "r3d:zz:synthetic:segment:s03-viaduct",
+      "alignmentId": "r3d:zz:synthetic:alignment:golden-centerline",
+      "from": {
+        "nodeId": "r3d:zz:synthetic:node:surface-end",
+        "position": [0.01, 0]
+      },
+      "to": {
+        "nodeId": "r3d:zz:synthetic:node:viaduct-end",
+        "position": [0.016, 0]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [0.01, 0],
+          [0.013, 0],
+          [0.016, 0]
+        ]
+      },
+      "lengthM": 800,
+      "structure": "viaduct",
+      "serviceStatus": "operational",
+      "trackCount": 2,
+      "gaugeMm": 1435,
+      "profileId": "r3d:zz:synthetic:profile:main",
+      "sourceRefs": [
+        {
+          "sourceId": "synthetic-authoring-2026-06",
+          "method": "constraint_solved",
+          "sourceFeatureId": "segment.s03"
+        }
+      ],
+      "qualityFlags": []
+    },
+    {
+      "id": "r3d:zz:synthetic:segment:s04-bridge",
+      "alignmentId": "r3d:zz:synthetic:alignment:golden-centerline",
+      "from": {
+        "nodeId": "r3d:zz:synthetic:node:viaduct-end",
+        "position": [0.016, 0]
+      },
+      "to": {
+        "nodeId": "r3d:zz:synthetic:node:bridge-end",
+        "position": [0.02, 0]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [0.016, 0],
+          [0.018, 0],
+          [0.02, 0]
+        ]
+      },
+      "lengthM": 400,
+      "structure": "bridge",
+      "serviceStatus": "operational",
+      "trackCount": 2,
+      "gaugeMm": 1435,
+      "profileId": "r3d:zz:synthetic:profile:main",
+      "sourceRefs": [
+        {
+          "sourceId": "synthetic-authoring-2026-06",
+          "method": "operator_published",
+          "sourceFeatureId": "segment.s04"
+        },
+        {
+          "sourceId": "synthetic-review-2026-06",
+          "method": "community_verified",
+          "sourceFeatureId": "conflict.s04"
+        }
+      ],
+      "qualityFlags": ["SOURCE_CONFLICT"]
+    },
+    {
+      "id": "r3d:zz:synthetic:segment:s05-unknown",
+      "alignmentId": "r3d:zz:synthetic:alignment:golden-centerline",
+      "from": {
+        "nodeId": "r3d:zz:synthetic:node:bridge-end",
+        "position": [0.02, 0]
+      },
+      "to": {
+        "nodeId": "r3d:zz:synthetic:node:C",
+        "position": [0.026, 0]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [0.02, 0],
+          [0.023, 0],
+          [0.026, 0]
+        ]
+      },
+      "lengthM": 600,
+      "structure": "unknown",
+      "serviceStatus": "operational",
+      "trackCount": 2,
+      "gaugeMm": 1435,
+      "profileId": "r3d:zz:synthetic:profile:main",
+      "sourceRefs": [
+        {
+          "sourceId": "synthetic-authoring-2026-06",
+          "method": "unknown",
+          "sourceFeatureId": "segment.s05"
+        }
+      ],
+      "qualityFlags": ["MISSING_RAIL_ELEVATION"]
+    },
+    {
+      "id": "r3d:zz:synthetic:segment:s06-branch-b",
+      "alignmentId": "r3d:zz:synthetic:alignment:golden-centerline",
+      "from": {
+        "nodeId": "r3d:zz:synthetic:node:portal",
+        "position": [0.006, 0]
+      },
+      "to": {
+        "nodeId": "r3d:zz:synthetic:node:B",
+        "position": [0.006, -0.008]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [0.006, 0],
+          [0.006, -0.004],
+          [0.006, -0.008]
+        ]
+      },
+      "lengthM": 900,
+      "structure": "surface",
+      "serviceStatus": "operational",
+      "trackCount": 1,
+      "gaugeMm": 1435,
+      "profileId": "r3d:zz:synthetic:profile:branch-b",
+      "sourceRefs": [
+        {
+          "sourceId": "synthetic-authoring-2026-06",
+          "method": "digitized",
+          "sourceFeatureId": "segment.s06"
+        }
+      ],
+      "qualityFlags": []
+    }
+  ],
+  "stations": [
+    {
+      "id": "r3d:zz:synthetic:station:A",
+      "name": {
+        "en": "Station A"
+      },
+      "operatorIds": ["r3d:zz:synthetic:operator:fixture-rail"],
+      "lineIds": ["r3d:zz:synthetic:line:golden"],
+      "centroid": [0, 0],
+      "groundReference": {
+        "valueM": 5,
+        "verticalDatum": "LOCAL_ENGINEERING_DATUM",
+        "method": "dem_sampled",
+        "confidence": "low",
+        "uncertaintyM": 8,
+        "provenance": [
+          {
+            "sourceId": "synthetic-authoring-2026-06",
+            "method": "dem_sampled",
+            "sourceFeatureId": "dem.station-a"
+          }
+        ],
+        "flags": []
+      },
+      "levels": [
+        {
+          "id": "r3d:zz:synthetic:station-level:A-track",
+          "kind": "track",
+          "elevation": {
+            "valueM": -18,
+            "verticalDatum": "LOCAL_ENGINEERING_DATUM",
+            "method": "surveyed",
+            "confidence": "verified",
+            "uncertaintyM": 0.2,
+            "provenance": [
+              {
+                "sourceId": "synthetic-authoring-2026-06",
+                "method": "surveyed",
+                "sourceFeatureId": "control.a"
+              }
+            ],
+            "flags": []
+          },
+          "servedLineIds": ["r3d:zz:synthetic:line:golden"],
+          "trackLabels": ["1", "2"]
+        }
+      ],
+      "aliases": ["A", "Fixture A"],
+      "sourceRefs": [
+        {
+          "sourceId": "synthetic-authoring-2026-06",
+          "method": "digitized",
+          "sourceFeatureId": "station.a"
+        }
+      ]
+    },
+    {
+      "id": "r3d:zz:synthetic:station:B",
+      "name": {
+        "en": "Station B"
+      },
+      "operatorIds": ["r3d:zz:synthetic:operator:fixture-rail"],
+      "lineIds": ["r3d:zz:synthetic:line:golden"],
+      "centroid": [0.006, -0.008],
+      "groundReference": {
+        "valueM": 6,
+        "verticalDatum": "LOCAL_ENGINEERING_DATUM",
+        "method": "dem_sampled",
+        "confidence": "low",
+        "uncertaintyM": 8,
+        "provenance": [
+          {
+            "sourceId": "synthetic-authoring-2026-06",
+            "method": "dem_sampled",
+            "sourceFeatureId": "dem.station-b"
+          }
+        ],
+        "flags": []
+      },
+      "levels": [
+        {
+          "id": "r3d:zz:synthetic:station-level:B-track",
+          "kind": "track",
+          "relativeDepthM": 12,
+          "servedLineIds": ["r3d:zz:synthetic:line:golden"],
+          "trackLabels": ["1"]
+        }
+      ],
+      "aliases": ["B", "Fixture B"],
+      "sourceRefs": [
+        {
+          "sourceId": "synthetic-authoring-2026-06",
+          "method": "digitized",
+          "sourceFeatureId": "station.b"
+        }
+      ]
+    },
+    {
+      "id": "r3d:zz:synthetic:station:C",
+      "name": {
+        "en": "Station C"
+      },
+      "operatorIds": ["r3d:zz:synthetic:operator:fixture-rail"],
+      "lineIds": ["r3d:zz:synthetic:line:golden"],
+      "centroid": [0.026, 0],
+      "groundReference": {
+        "valueM": 12,
+        "verticalDatum": "LOCAL_ENGINEERING_DATUM",
+        "method": "dem_sampled",
+        "confidence": "medium",
+        "uncertaintyM": 3,
+        "provenance": [
+          {
+            "sourceId": "synthetic-authoring-2026-06",
+            "method": "dem_sampled",
+            "sourceFeatureId": "dem.station-c"
+          }
+        ],
+        "flags": []
+      },
+      "levels": [
+        {
+          "id": "r3d:zz:synthetic:station-level:C-track",
+          "kind": "track",
+          "elevation": {
+            "valueM": 28,
+            "verticalDatum": "LOCAL_ENGINEERING_DATUM",
+            "method": "surveyed",
+            "confidence": "verified",
+            "uncertaintyM": 0.2,
+            "provenance": [
+              {
+                "sourceId": "synthetic-authoring-2026-06",
+                "method": "surveyed",
+                "sourceFeatureId": "control.c"
+              }
+            ],
+            "flags": []
+          },
+          "servedLineIds": ["r3d:zz:synthetic:line:golden"],
+          "trackLabels": ["1", "2"]
+        }
+      ],
+      "aliases": ["C", "Fixture C"],
+      "sourceRefs": [
+        {
+          "sourceId": "synthetic-authoring-2026-06",
+          "method": "digitized",
+          "sourceFeatureId": "station.c"
+        }
+      ]
+    }
+  ],
+  "profiles": [
+    {
+      "id": "r3d:zz:synthetic:profile:main",
+      "ownerType": "route",
+      "ownerId": "r3d:zz:synthetic:route:main",
+      "verticalDatum": "LOCAL_ENGINEERING_DATUM",
+      "sampleIntervalTargetM": 100,
+      "totalLengthM": 3000,
+      "samples": [
+        {
+          "chainageM": 0,
+          "position": [0, 0],
+          "railElevationM": -18,
+          "groundElevationM": 5,
+          "clearanceM": -23,
+          "gradientPermille": null,
+          "structure": "underground_tunnel",
+          "confidence": "verified",
+          "uncertaintyM": 0.2,
+          "method": "surveyed",
+          "provenance": [
+            {
+              "sourceId": "synthetic-authoring-2026-06",
+              "method": "surveyed",
+              "sourceFeatureId": "control.a"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "chainageM": 700,
+          "position": [0.006, 0],
+          "railElevationM": 2,
+          "groundElevationM": 2,
+          "clearanceM": 0,
+          "gradientPermille": 28.5714285714,
+          "structure": "surface",
+          "confidence": "high",
+          "uncertaintyM": 0.8,
+          "method": "operator_published",
+          "provenance": [
+            {
+              "sourceId": "synthetic-authoring-2026-06",
+              "method": "operator_published",
+              "sourceFeatureId": "control.portal"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "chainageM": 1200,
+          "position": [0.01, 0],
+          "railElevationM": 5,
+          "groundElevationM": 4,
+          "clearanceM": 1,
+          "gradientPermille": 6,
+          "structure": "surface",
+          "confidence": "low",
+          "uncertaintyM": 8,
+          "method": "dem_sampled",
+          "provenance": [
+            {
+              "sourceId": "synthetic-authoring-2026-06",
+              "method": "dem_sampled",
+              "sourceFeatureId": "dem.sample.1200"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "chainageM": 2000,
+          "position": [0.016, 0],
+          "railElevationM": 18,
+          "groundElevationM": 10,
+          "clearanceM": 8,
+          "gradientPermille": 16.25,
+          "structure": "viaduct",
+          "confidence": "medium",
+          "uncertaintyM": 3,
+          "method": "constraint_solved",
+          "provenance": [
+            {
+              "sourceId": "synthetic-authoring-2026-06",
+              "method": "constraint_solved",
+              "sourceFeatureId": "solver.main"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "chainageM": 2400,
+          "position": [0.02, 0],
+          "railElevationM": 22,
+          "groundElevationM": 1,
+          "clearanceM": 21,
+          "gradientPermille": 10,
+          "structure": "bridge",
+          "confidence": "high",
+          "uncertaintyM": 0.8,
+          "method": "operator_published",
+          "provenance": [
+            {
+              "sourceId": "synthetic-authoring-2026-06",
+              "method": "operator_published",
+              "sourceFeatureId": "structure.bridge"
+            },
+            {
+              "sourceId": "synthetic-review-2026-06",
+              "method": "community_verified",
+              "sourceFeatureId": "conflict.s04"
+            }
+          ],
+          "flags": ["SOURCE_CONFLICT"]
+        },
+        {
+          "chainageM": 2700,
+          "position": [0.023, 0],
+          "railElevationM": null,
+          "groundElevationM": 8,
+          "clearanceM": null,
+          "gradientPermille": null,
+          "structure": "unknown",
+          "confidence": "unknown",
+          "method": "unknown",
+          "provenance": [],
+          "flags": ["MISSING_RAIL_ELEVATION"]
+        },
+        {
+          "chainageM": 3000,
+          "position": [0.026, 0],
+          "railElevationM": 28,
+          "groundElevationM": 12,
+          "clearanceM": 16,
+          "gradientPermille": null,
+          "structure": "unknown",
+          "confidence": "verified",
+          "uncertaintyM": 0.2,
+          "method": "surveyed",
+          "provenance": [
+            {
+              "sourceId": "synthetic-authoring-2026-06",
+              "method": "surveyed",
+              "sourceFeatureId": "control.c"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "solver": {
+        "algorithm": "weighted-constrained-smoothing-v1",
+        "solverVersion": "synthetic-fixture",
+        "controlPointCount": 4,
+        "hardConstraintCount": 4,
+        "maxInterpolationSpanM": 700,
+        "parameters": {
+          "synthetic": true
+        }
+      },
+      "aggregateQuality": {
+        "knownRailElevationRatio": 0.8571428571,
+        "publishedControlCoverageRatio": 0.4285714286,
+        "maxUncertaintyM": 8,
+        "meanUncertaintyM": 1.8571428571,
+        "confidence": "medium",
+        "flags": ["MISSING_RAIL_ELEVATION", "SOURCE_CONFLICT"]
+      }
+    },
+    {
+      "id": "r3d:zz:synthetic:profile:branch-b",
+      "ownerType": "route",
+      "ownerId": "r3d:zz:synthetic:route:branch-b",
+      "verticalDatum": "LOCAL_ENGINEERING_DATUM",
+      "sampleIntervalTargetM": 100,
+      "totalLengthM": 900,
+      "samples": [
+        {
+          "chainageM": 0,
+          "position": [0.006, 0],
+          "railElevationM": 2,
+          "groundElevationM": 2,
+          "clearanceM": 0,
+          "gradientPermille": null,
+          "structure": "surface",
+          "confidence": "high",
+          "uncertaintyM": 0.8,
+          "method": "operator_published",
+          "provenance": [
+            {
+              "sourceId": "synthetic-authoring-2026-06",
+              "method": "operator_published",
+              "sourceFeatureId": "control.portal"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "chainageM": 900,
+          "position": [0.006, -0.008],
+          "railElevationM": null,
+          "groundElevationM": 6,
+          "clearanceM": null,
+          "gradientPermille": null,
+          "structure": "surface",
+          "confidence": "low",
+          "uncertaintyM": 8,
+          "method": "interpolated",
+          "provenance": [
+            {
+              "sourceId": "synthetic-authoring-2026-06",
+              "method": "interpolated",
+              "sourceFeatureId": "relative-depth.b"
+            }
+          ],
+          "flags": ["MISSING_RAIL_ELEVATION"]
+        }
+      ],
+      "aggregateQuality": {
+        "knownRailElevationRatio": 0.5,
+        "publishedControlCoverageRatio": 0.5,
+        "maxUncertaintyM": 8,
+        "meanUncertaintyM": 4.4,
+        "confidence": "low",
+        "flags": ["MISSING_RAIL_ELEVATION"]
+      }
+    }
+  ],
+  "controlPoints": [
+    {
+      "id": "r3d:zz:synthetic:control-point:rail-a",
+      "ownerId": "r3d:zz:synthetic:route:main",
+      "chainageM": 0,
+      "kind": "rail_elevation",
+      "railElevation": {
+        "valueM": -18,
+        "verticalDatum": "LOCAL_ENGINEERING_DATUM",
+        "method": "surveyed",
+        "confidence": "verified",
+        "uncertaintyM": 0.2,
+        "provenance": [
+          {
+            "sourceId": "synthetic-authoring-2026-06",
+            "method": "surveyed",
+            "sourceFeatureId": "control.a"
+          }
+        ],
+        "flags": []
+      },
+      "hardConstraint": true,
+      "note": "Synthetic Q4 hard rail elevation at Station A."
+    },
+    {
+      "id": "r3d:zz:synthetic:control-point:portal",
+      "ownerId": "r3d:zz:synthetic:route:main",
+      "chainageM": 700,
+      "kind": "portal",
+      "railElevation": {
+        "valueM": 2,
+        "verticalDatum": "LOCAL_ENGINEERING_DATUM",
+        "method": "operator_published",
+        "confidence": "high",
+        "uncertaintyM": 0.8,
+        "provenance": [
+          {
+            "sourceId": "synthetic-authoring-2026-06",
+            "method": "operator_published",
+            "sourceFeatureId": "control.portal"
+          }
+        ],
+        "flags": []
+      },
+      "hardConstraint": true,
+      "note": "Synthetic Q3 portal control point. Adjacent segment endpoints are continuous."
+    },
+    {
+      "id": "r3d:zz:synthetic:control-point:rail-c",
+      "ownerId": "r3d:zz:synthetic:route:main",
+      "chainageM": 3000,
+      "kind": "rail_elevation",
+      "railElevation": {
+        "valueM": 28,
+        "verticalDatum": "LOCAL_ENGINEERING_DATUM",
+        "method": "surveyed",
+        "confidence": "verified",
+        "uncertaintyM": 0.2,
+        "provenance": [
+          {
+            "sourceId": "synthetic-authoring-2026-06",
+            "method": "surveyed",
+            "sourceFeatureId": "control.c"
+          }
+        ],
+        "flags": []
+      },
+      "hardConstraint": true,
+      "note": "Synthetic Q4 hard rail elevation at Station C."
+    },
+    {
+      "id": "r3d:zz:synthetic:control-point:relative-depth-b",
+      "ownerId": "r3d:zz:synthetic:route:branch-b",
+      "chainageM": 900,
+      "kind": "relative_depth",
+      "relativeDepthM": 12,
+      "groundReference": {
+        "valueM": 6,
+        "verticalDatum": "LOCAL_ENGINEERING_DATUM",
+        "method": "dem_sampled",
+        "confidence": "low",
+        "uncertaintyM": 8,
+        "provenance": [
+          {
+            "sourceId": "synthetic-authoring-2026-06",
+            "method": "dem_sampled",
+            "sourceFeatureId": "dem.station-b"
+          }
+        ],
+        "flags": []
+      },
+      "hardConstraint": true,
+      "note": "Synthetic relative-depth control. Rail elevation remains null in the fixture."
+    }
+  ]
+}

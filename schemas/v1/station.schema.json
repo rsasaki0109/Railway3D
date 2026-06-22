@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://railway3d.dev/schemas/v1/station.schema.json",
+  "title": "RailwayStation",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/entityId"
+    },
+    "name": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/localizedText"
+    },
+    "operatorIds": {
+      "type": "array",
+      "items": {
+        "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/entityId"
+      }
+    },
+    "lineIds": {
+      "type": "array",
+      "items": {
+        "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/entityId"
+      }
+    },
+    "centroid": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/lngLat"
+    },
+    "groundReference": {
+      "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/elevationValue"
+    },
+    "levels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/entityId"
+          },
+          "kind": {
+            "type": "string",
+            "enum": ["track", "platform", "concourse", "entrance", "ground", "other"]
+          },
+          "name": {
+            "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/localizedText"
+          },
+          "elevation": {
+            "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/elevationValue"
+          },
+          "relativeDepthM": {
+            "type": "number"
+          },
+          "servedLineIds": {
+            "type": "array",
+            "items": {
+              "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/entityId"
+            }
+          },
+          "trackLabels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": ["id", "kind"]
+      }
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "sourceRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "https://railway3d.dev/schemas/v1/shared.schema.json#/$defs/provenanceRef"
+      }
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "operatorIds",
+    "lineIds",
+    "centroid",
+    "levels",
+    "aliases",
+    "sourceRefs"
+  ]
+}

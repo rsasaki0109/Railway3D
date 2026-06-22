@@ -1,0 +1,25 @@
+{
+  "name": "@railway3d/schema",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./src/index.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint . --max-warnings=0",
+    "generate": "node ./scripts/generate.mjs",
+    "validate": "pnpm run build && node ./scripts/validate.mjs",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@railway3d/domain": "workspace:*",
+    "ajv": "8.20.0"
+  },
+  "devDependencies": {
+    "json-schema-to-typescript": "15.0.4",
+    "prettier": "3.8.4",
+    "vitest": "4.1.9"
+  }
+}

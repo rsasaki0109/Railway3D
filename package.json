@@ -1,0 +1,34 @@
+{
+  "name": "railway3d-workspace",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "packageManager": "pnpm@11.8.0",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @railway3d/web dev",
+    "build": "pnpm -r --if-present build",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "lint": "pnpm -r --if-present lint",
+    "format:check": "prettier --check .",
+    "test": "pnpm -r --if-present test",
+    "test:e2e": "playwright test",
+    "test:visual": "playwright test --grep @visual",
+    "schema:generate": "pnpm --filter @railway3d/schema generate",
+    "schema:validate": "pnpm --filter @railway3d/schema validate",
+    "data:validate:sample": "uv run --project tools/pipeline railway3d validate dataset data/sample/synthetic-golden/v1/dataset.json",
+    "ci": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.61.0",
+    "@types/node": "24.13.2",
+    "eslint": "10.5.0",
+    "globals": "17.6.0",
+    "prettier": "3.8.4",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.61.1"
+  }
+}

@@ -1,0 +1,21 @@
+[project]
+name = "railway3d-pipeline"
+version = "0.0.0"
+description = "Railway3D static data pipeline bootstrap package."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = ["jsonschema==4.25.1"]
+
+[project.scripts]
+railway3d = "railway3d_pipeline.cli:main"
+
+[dependency-groups]
+dev = ["pytest==8.4.2"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
