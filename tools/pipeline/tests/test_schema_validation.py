@@ -50,6 +50,13 @@ def test_dangling_source_reference_is_rejected() -> None:
     assert "DANGLING_SOURCE_REFERENCE" in issue_codes(dataset)
 
 
+def test_hard_control_point_mismatch_is_rejected() -> None:
+    dataset = copy.deepcopy(load_fixture())
+    dataset["profiles"][0]["samples"][0]["railElevationM"] = -17
+
+    assert "HARD_CONTROL_MISMATCH" in issue_codes(dataset)
+
+
 def test_high_confidence_without_provenance_is_rejected() -> None:
     dataset = copy.deepcopy(load_fixture())
     dataset["profiles"][0]["samples"][1]["provenance"] = []
