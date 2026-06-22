@@ -28,6 +28,8 @@ jobs:
           cache: pnpm
       - uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d
+        with:
+          enablement: true
       - run: pnpm install --frozen-lockfile
       - run: pnpm run ci
       - run: uv sync --project tools/pipeline --frozen
