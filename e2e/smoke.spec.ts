@@ -1,12 +1,25 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
-test('loads the PR-005 development build and metadata', async ({ page }) => {
+async function waitForMapReady(page: Page) {
+  await expect(page.getByTestId('map-status')).toContainText(/3D map ready|Terrain unavailable/, {
+    timeout: 30_000,
+  });
+}
+
+async function selectSearchResult(page: Page, query: string) {
+  const input = page.getByTestId('search-input');
+  await input.click();
+  await input.fill(query);
+  await page.keyboard.press('Enter');
+}
+
+test('loads the PR-006 development build and metadata', async ({ page }) => {
   await page.goto('./');
 
   await expect(page.getByRole('heading', { name: 'Railway3D' })).toBeVisible();
   await expect(page.getByText('development build')).toBeVisible();
   await expect(
-    page.getByText('PR-005 adds synthetic railway rendering and X-ray layers'),
+    page.getByText('PR-006 adds synthetic search, selection, inspector, and share URL state'),
   ).toBeVisible();
   await expect(page.getByRole('link', { name: 'View build metadata' })).toBeVisible();
 
@@ -26,9 +39,7 @@ test('loads one interactive MapLibre canvas and responds to zoom', async ({ page
 
   await expect(page.getByTestId('map-viewport')).toBeVisible();
   await expect(page.locator('.maplibregl-canvas')).toHaveCount(1);
-  await expect(page.getByTestId('map-status')).toContainText(/3D map ready|Terrain unavailable/, {
-    timeout: 30_000,
-  });
+  await waitForMapReady(page);
 
   const before = await page.getByTestId('view-state').textContent();
   await page.locator('.maplibregl-ctrl-zoom-in').click();
@@ -41,9 +52,7 @@ test('loads one interactive MapLibre canvas and responds to zoom', async ({ page
 test('switches X-ray modes and vertical exaggeration', async ({ page }) => {
   await page.goto('./');
 
-  await expect(page.getByTestId('map-status')).toContainText(/3D map ready|Terrain unavailable/, {
-    timeout: 30_000,
-  });
+  await waitForMapReady(page);
   await expect(page.getByTestId('xray-status')).toContainText('selected · 1 path');
 
   await page.getByTestId('xray-off').click();
@@ -57,6 +66,66 @@ test('switches X-ray modes and vertical exaggeration', async ({ page }) => {
 
   await page.getByTestId('color-structure').click();
   await expect(page.getByTestId('color-structure')).toHaveAttribute('data-active', 'true');
+});
+
+test('supports keyboard search, selection, and clear', async ({ page }) => {
+  await page.goto('./');
+  await waitForMapReady(page);
+
+  await page.keyboard.press('/');
+  await expect(page.getByTestId('search-input')).toBeFocused();
+  await page.getByTestId('search-input').fill('SYN-A');
+  await page.keyboard.press('Enter');
+
+  await expect(page.getByTestId('selection-status')).toContainText('Station A');
+  await expect(page.getByTestId('inspector-title')).toHaveText('Station A');
+
+  await page.getByTestId('clear-selection').focus();
+  await page.keyboard.press('Enter');
+  await expect(page.getByTestId('selection-status')).toContainText('None');
+  await expect(page.getByTestId('inspector-title')).toHaveText('None');
+});
+
+test('restores selection with browser back and forward', async ({ page }) => {
+  await page.goto('./');
+  await waitForMapReady(page);
+
+  await selectSearchResult(page, 'SYN-A');
+  await expect(page.getByTestId('inspector-title')).toHaveText('Station A');
+
+  await selectSearchResult(page, 'SYN-C');
+  await expect(page.getByTestId('inspector-title')).toHaveText('Station C');
+
+  await page.goBack();
+  await expect(page.getByTestId('inspector-title')).toHaveText('Station A');
+
+  await page.goForward();
+  await expect(page.getByTestId('inspector-title')).toHaveText('Station C');
+});
+
+test('clamps invalid URL state and ignores unsupported values', async ({ page }) => {
+  await page.goto('./#/@999,999,99,99,999?mode=bad&xray=bad&vex=99&station=bad');
+  await waitForMapReady(page);
+
+  await expect(page.getByTestId('view-state')).toContainText(
+    'lng 180.000 · lat 85.000 · z 22.0 · pitch 75 · bearing 180',
+  );
+  await expect(page.getByTestId('xray-status')).toContainText('selected · 1 path');
+  await expect(page.getByTestId('vex-status')).toContainText('Vertical ×1');
+  await expect(page.getByTestId('selection-status')).toContainText('Golden Fixture Line');
+});
+
+test('distinguishes same-name station search candidates', async ({ page }) => {
+  await page.goto('./');
+
+  const input = page.getByTestId('search-input');
+  await input.click();
+  await input.fill('Station Echo');
+
+  await expect(page.getByText('North Fixture Branch')).toBeVisible();
+  await expect(page.getByText('Synthetic North')).toBeVisible();
+  await expect(page.getByText('South Fixture Branch')).toBeVisible();
+  await expect(page.getByText('Synthetic South')).toBeVisible();
 });
 
 test('surfaces WebGL context loss in the DOM', async ({ page }) => {

@@ -70,7 +70,9 @@ a {
   z-index: 2;
   display: grid;
   width: min(31rem, calc(100% - 2rem));
+  max-height: calc(100vh - 4rem);
   gap: 1rem;
+  overflow: auto;
   padding: clamp(1rem, 3vw, 1.5rem);
 }
 
@@ -141,6 +143,113 @@ h2 {
   line-height: 1.6;
 }
 
+.app-heading {
+  display: grid;
+  gap: 1rem;
+}
+
+.search-command {
+  position: relative;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.search-label {
+  color: #4f635b;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.search-input {
+  box-sizing: border-box;
+  width: 100%;
+  border: 2px solid #102820;
+  border-radius: 6px;
+  padding: 0.72rem 0.85rem;
+  background: #f6f8f9;
+  color: #102820;
+  font: inherit;
+}
+
+.search-input:focus-visible {
+  outline: 3px solid #b34d00;
+  outline-offset: 3px;
+}
+
+.search-results {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  right: 0;
+  z-index: 4;
+  display: grid;
+  max-height: min(20rem, 50vh);
+  gap: 0.2rem;
+  overflow: auto;
+  margin: 0;
+  border: 1px solid rgb(16 40 32 / 18%);
+  border-radius: 8px;
+  padding: 0.3rem;
+  background: #f6f8f9;
+  box-shadow: 0 18px 36px rgb(16 40 32 / 18%);
+  list-style: none;
+}
+
+.search-result-button {
+  display: grid;
+  width: 100%;
+  border: 0;
+  border-radius: 6px;
+  padding: 0.65rem 0.75rem;
+  background: transparent;
+  color: #102820;
+  text-align: left;
+}
+
+.search-result[aria-selected='true'] .search-result-button,
+.search-result-button:hover {
+  background: #d8efe8;
+}
+
+.search-result-name {
+  font-weight: 800;
+}
+
+.search-result-subtitle,
+.inspector-subtitle,
+.inspector-note {
+  color: #4f635b;
+  font-size: 0.875rem;
+}
+
+.feature-inspector {
+  display: grid;
+  gap: 0.8rem;
+  border-top: 1px solid rgb(16 40 32 / 16%);
+  padding-top: 1rem;
+}
+
+.inspector-list {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+}
+
+.inspector-list div {
+  display: grid;
+  grid-template-columns: minmax(5rem, auto) 1fr;
+  gap: 0.75rem;
+}
+
+.inspector-list dt {
+  color: #4f635b;
+  font-weight: 700;
+}
+
+.inspector-list dd {
+  margin: 0;
+}
+
 .panel-actions {
   display: flex;
   flex-wrap: wrap;
@@ -198,6 +307,7 @@ h2 {
   .app-panel {
     right: 4.75rem;
     width: auto;
+    max-height: 16rem;
   }
 
   .map-overlay-top {

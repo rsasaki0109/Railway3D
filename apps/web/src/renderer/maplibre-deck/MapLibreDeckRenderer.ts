@@ -29,9 +29,20 @@ export type MapRendererStatus =
 export interface MapLibreDeckRendererOptions {
   container: HTMLElement;
   basePath: string;
+  initialViewState: ViewStateSerializable;
   onStatusChange(status: MapRendererStatus): void;
   onViewStateChange(viewState: ViewStateSerializable): void;
   onSelectionChange(selection: Selection): void;
+}
+
+function viewStatesEqual(left: ViewStateSerializable, right: ViewStateSerializable): boolean {
+  return (
+    left.longitude === right.longitude &&
+    left.latitude === right.latitude &&
+    left.zoom === right.zoom &&
+    left.pitch === right.pitch &&
+    left.bearing === right.bearing
+  );
 }
 
 export class MapLibreDeckRenderer {
@@ -60,10 +71,10 @@ export class MapLibreDeckRenderer {
     const map = new maplibregl.Map({
       container: options.container,
       style: createRailway3DMapStyle(options.basePath),
-      center: [INITIAL_VIEW_STATE.longitude, INITIAL_VIEW_STATE.latitude],
-      zoom: INITIAL_VIEW_STATE.zoom,
-      pitch: INITIAL_VIEW_STATE.pitch,
-      bearing: INITIAL_VIEW_STATE.bearing,
+      center: [options.initialViewState.longitude, options.initialViewState.latitude],
+      zoom: options.initialViewState.zoom,
+      pitch: options.initialViewState.pitch,
+      bearing: options.initialViewState.bearing,
       attributionControl: false,
       canvasContextAttributes: {
         antialias: true,
@@ -108,6 +119,20 @@ export class MapLibreDeckRenderer {
   setSelection(selection: Selection): void {
     this.#selection = selection;
     this.#syncLayers();
+  }
+
+  setViewState(viewState: ViewStateSerializable): void {
+    const map = this.#map;
+    if (map === null) {
+      return;
+    }
+
+    if (viewStatesEqual(toSerializableViewState(map), viewState)) {
+      return;
+    }
+
+    map.jumpTo(toMapJumpOptions(viewState));
+    this.#emitViewState();
   }
 
   flyToInitialView(options: { reducedMotion: boolean }): void {
