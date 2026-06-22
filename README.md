@@ -10,8 +10,8 @@ Static-first 3D railway geospatial platform.
 
 This repository is in early bootstrap. The current site is a development build
 that verifies the workspace, static deployment path, test setup, schema/domain
-foundation, and data-client skeleton. It does not render maps or real railway
-data yet.
+foundation, data-client skeleton, and MapLibre/deck.gl map shell. It does not
+render real railway data yet.
 
 Implemented milestones:
 
@@ -23,6 +23,9 @@ Implemented milestones:
 - PR-003: static data client with catalog/manifest loading, schema validation,
   schema compatibility checks, asset URL safety, host allowlist, abort support,
   retry policy, typed errors, cache, and checksum validation.
+- PR-004: MapLibre and deck.gl shell, same-origin synthetic terrain fixture,
+  attribution, WebGL2 capability check, context loss state, resize handling, and
+  reduced-motion camera reset behavior.
 
 ## Local Development
 
