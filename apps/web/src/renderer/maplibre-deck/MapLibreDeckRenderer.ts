@@ -54,6 +54,7 @@ export class MapLibreDeckRenderer {
   #overlay: MapboxOverlay | null = null;
   #options: MapLibreDeckRendererOptions | null = null;
   #ready = false;
+  #contextLost = false;
   #readyFallbackTimer: ReturnType<typeof setTimeout> | null = null;
   #visualization: VisualizationState = {
     colorMode: 'line',
