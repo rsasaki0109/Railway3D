@@ -4,7 +4,9 @@ Static-first 3D railway geospatial platform.
 
 [Live development build](https://rsasaki0109.github.io/Railway3D/)
 
-![Railway3D development build screenshot](docs/assets/railway3d-development-build.png)
+![Railway3D Tokyo Metro pilot — Ginza and Marunouchi lines on a GSI basemap](docs/assets/railway3d-development-build.png)
+
+<p align="center"><sub>Tokyo Metro pilot (銀座線 / 丸ノ内線). Approximate geometry · illustrative Z only · basemap © 国土地理院</sub></p>
 
 ## Status
 
