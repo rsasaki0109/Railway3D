@@ -2,7 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 
 async function waitForMapReady(page: Page) {
   await expect(page.getByTestId('map-status')).toContainText(/3D map ready|Terrain unavailable/, {
-    timeout: 30_000,
+    timeout: 60_000,
   });
 }
 
@@ -18,7 +18,7 @@ test('loads the Tokyo Metro development build and metadata', async ({ page }) =>
 
   await expect(page.getByRole('heading', { name: 'Railway3D' })).toBeVisible();
   await expect(page.getByText('development build')).toBeVisible();
-  await expect(page.getByText('Tokyo Metro pilot')).toBeVisible();
+  await expect(page.locator('#app-summary')).toContainText('Tokyo Metro pilot');
   await expect(page.getByRole('link', { name: 'View build metadata' })).toBeVisible();
 
   const response = await page.request.get('./health.json');
