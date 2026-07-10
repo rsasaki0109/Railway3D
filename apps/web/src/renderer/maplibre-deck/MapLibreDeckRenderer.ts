@@ -53,6 +53,8 @@ export class MapLibreDeckRenderer {
   #map: Map | null = null;
   #overlay: MapboxOverlay | null = null;
   #options: MapLibreDeckRendererOptions | null = null;
+  #ready = false;
+  #readyFallbackTimer: ReturnType<typeof setTimeout> | null = null;
   #visualization: VisualizationState = {
     colorMode: 'line',
     xrayMode: 'selected',
@@ -72,6 +74,7 @@ export class MapLibreDeckRenderer {
     }
 
     this.#options = options;
+    this.#ready = false;
 
     const map = new maplibregl.Map({
       container: options.container,
@@ -117,6 +120,10 @@ export class MapLibreDeckRenderer {
     this.#map = map;
     this.#overlay = overlay;
     this.#syncLayers();
+    // Remote basemap / extreme deep-link views can delay MapLibre events in CI.
+    this.#readyFallbackTimer = setTimeout(() => {
+      this.#markReady();
+    }, 2500);
   }
 
   setVisualization(visualization: VisualizationState): void {
@@ -179,6 +186,11 @@ export class MapLibreDeckRenderer {
       return;
     }
 
+    if (this.#readyFallbackTimer !== null) {
+      clearTimeout(this.#readyFallbackTimer);
+      this.#readyFallbackTimer = null;
+    }
+
     map.off('load', this.#handleLoad);
     map.off('idle', this.#handleIdleReady);
     map.off('moveend', this.#handleMoveEnd);
@@ -195,6 +207,7 @@ export class MapLibreDeckRenderer {
     this.#map = null;
     this.#overlay = null;
     this.#options = null;
+    this.#ready = false;
   }
 
   get isMounted(): boolean {
@@ -211,6 +224,14 @@ export class MapLibreDeckRenderer {
   };
 
   #markReady(): void {
+    if (this.#ready) {
+      return;
+    }
+    this.#ready = true;
+    if (this.#readyFallbackTimer !== null) {
+      clearTimeout(this.#readyFallbackTimer);
+      this.#readyFallbackTimer = null;
+    }
     this.#options?.onStatusChange('ready');
     this.#emitViewState();
   }

@@ -143,8 +143,13 @@ test('syncs profile cursor to the map overlay and URL state', async ({ page }) =
 });
 
 test('keeps null rail profile samples explicit', async ({ page }) => {
-  await page.goto('./#/@139.77,35.68,12,52,-28?line=r3d:jp:tokyometro:line:ginza&profile=7200');
+  await page.goto('./');
   await waitForMapReady(page);
+
+  // Step from default 上野 (2.4 km) to 京橋 (7.2 km), which is the null rail sample.
+  for (let step = 0; step < 6; step += 1) {
+    await page.getByTestId('profile-next-sample').click();
+  }
 
   await expect(page.getByTestId('profile-cursor-status')).toContainText('7.20 km');
   await expect(page.getByTestId('profile-cursor-status')).toContainText('rail unknown');
