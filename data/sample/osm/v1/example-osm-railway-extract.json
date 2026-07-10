@@ -1,0 +1,116 @@
+{
+  "documentId": "osm-sample-railway-extract-example-2026-07",
+  "title": "Synthetic OSM-shaped railway extract example",
+  "kind": "osm-railway-extract",
+  "synthetic": true,
+  "authoredBy": "Railway3D project (synthetic authoring exercise)",
+  "authoredAt": "2026-07-10",
+  "horizontalCrs": "EPSG:4326",
+  "license": {
+    "id": "ODbL-1.0",
+    "name": "Open Database License 1.0",
+    "redistributionAllowed": true,
+    "attributionRequired": true,
+    "shareAlike": true
+  },
+  "sourceNote": "This is a synthetic, OSM-shaped railway extract authored for Railway3D pipeline testing. It is NOT a real OpenStreetMap PBF extract, is not derived from any real OSM snapshot, and must not be treated as an authoritative alignment source. Names and geometries are fictional. OSM layer/tunnel/bridge/covered tags are structure hints only and are never converted to metric Z or rail elevation.",
+  "elements": [
+    {
+      "type": "way",
+      "id": 1001,
+      "tags": {
+        "railway": "subway",
+        "name": "サンプル地下線",
+        "tunnel": "yes",
+        "layer": "-1",
+        "operator": "サンプル地下鉄"
+      },
+      "nodes": [1, 2, 3],
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [139.701, 35.651],
+          [139.705, 35.653],
+          [139.709, 35.655]
+        ]
+      }
+    },
+    {
+      "type": "way",
+      "id": 1002,
+      "tags": {
+        "railway": "subway",
+        "name": "サンプル高架線",
+        "bridge": "yes",
+        "layer": "1",
+        "operator": "サンプル地下鉄"
+      },
+      "nodes": [3, 4, 5],
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [139.709, 35.655],
+          [139.713, 35.657],
+          [139.717, 35.659]
+        ]
+      }
+    },
+    {
+      "type": "way",
+      "id": 1003,
+      "tags": {
+        "railway": "rail",
+        "name": "サンプル地表線",
+        "operator": "サンプル地下鉄"
+      },
+      "nodes": [5, 6],
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [139.717, 35.659],
+          [139.721, 35.661]
+        ]
+      }
+    },
+    {
+      "type": "node",
+      "id": 2001,
+      "tags": {
+        "railway": "station",
+        "name": "サンプル起点駅",
+        "operator": "サンプル地下鉄",
+        "subway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [139.701, 35.651]
+      }
+    },
+    {
+      "type": "node",
+      "id": 2002,
+      "tags": {
+        "railway": "station",
+        "name": "サンプル中間駅",
+        "operator": "サンプル地下鉄"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [139.709, 35.655]
+      }
+    },
+    {
+      "type": "node",
+      "id": 2003,
+      "tags": {
+        "railway": "halt",
+        "name": "サンプル高架駅",
+        "operator": "サンプル地下鉄"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [139.717, 35.659]
+      }
+    }
+  ]
+}

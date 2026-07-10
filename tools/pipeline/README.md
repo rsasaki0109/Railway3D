@@ -99,4 +99,56 @@ PR-012 limitations:
 - `data/sample/n02/v1/example-n02-inventory.json` is a synthetic example (`"synthetic": true`)
   with fictional operator/line/station names; it is not derived from any real N02 release.
 - This adapter is inventory-only: it does not attempt surveyed centerline precision or any
-  elevation/Z value. The OSM PBF and GSI DEM adapters remain audit-only skeletons.
+  elevation/Z value.
+
+PR-013 promotes the `osm-pbf` adapter from an audit-only skeleton to a real, deterministic
+parser for OSM-shaped railway extract documents (JSON fixtures; not binary `.osm.pbf` bytes):
+
+```bash
+uv run --project tools/pipeline railway3d source parse-osm data/sample/osm/v1/example-osm-railway-extract.json --output build/reports/example-osm-railway-extract.json
+uv run --project tools/pipeline railway3d source parse-osm data/sample/osm/v1/example-osm-railway-extract.json --output build/reports/example-osm-railway-extract.md
+```
+
+The adapter normalizes railway ways into alignments/segments (structure tags only) and stations
+into inventory points. Profiles are elevation-null stubs with `MISSING_RAIL_ELEVATION`. Tags such
+as `ele`, `height`, or 3D coordinates are rejected (`OSM_ELEVATION_PROHIBITED`). `layer` is never
+converted to meters.
+
+PR-013 limitations:
+
+- Only the bundled synthetic OSM-shaped fixture is parsed; no real PBF fetch or provider snapshot.
+- ODbL license separation for derived public packages remains a later legal/data-policy step.
+
+PR-014 promotes the `gsi-dem` adapter to a deterministic ground-elevation grid parser:
+
+```bash
+uv run --project tools/pipeline railway3d source parse-gsi-dem data/sample/gsi-dem/v1/example-gsi-dem-grid.json --output build/reports/example-gsi-dem-grid.json
+uv run --project tools/pipeline railway3d source parse-gsi-dem data/sample/gsi-dem/v1/example-gsi-dem-grid.json --output build/reports/example-gsi-dem-grid.md
+```
+
+Samples are ground elevation only (`railElevationM` is always null). Role must be
+`ground_elevation` or `terrain_rendering`. `UNKNOWN` vertical datum is rejected
+(`GSI_DEM_DATUM_UNKNOWN`). Void cells are preserved with `DEM_VOID`.
+
+PR-014 limitations:
+
+- Only the bundled synthetic DEM-shaped grid is parsed; no real 基盤地図情報 DEM product is fetched.
+- DEM cannot validate or supply rail elevation.
+
+PR-015 selects a Tokyo Metro geometry/inventory pilot corridor and freezes a plan package:
+
+```bash
+uv run --project tools/pipeline railway3d source plan-corridor jp-tokyo-metro --output build/plans/jp-tokyo-metro
+uv run --project tools/pipeline railway3d source fetch jp-tokyo-metro --output build/sources/jp-tokyo-metro
+uv run --project tools/pipeline railway3d source audit jp-tokyo-metro --output build/reports/tokyo-metro-source-audit.md
+```
+
+Selected corridor: **銀座線 上野–浅草** (`jp-tokyo-metro-ginza-ueno-asakusa`), status
+`geometry-inventory-pilot`. Public package decision remains **blocked**. `source fetch` for
+`jp-tokyo-metro` writes the corridor plan only; it does not download N02/OSM/GSI bytes.
+
+PR-015 limitations:
+
+- No real Tokyo Metro geometry, DEM, or elevation package is published.
+- Manual control points for the corridor remain unapproved for public redistribution.
+- Real snapshot pinning (exact N02/OSM/GSI bytes) remains an unresolved gate.

@@ -40,6 +40,13 @@ Implemented milestones:
 - PR-008: SVG elevation profile panel, lazy synthetic profile loading,
   profile-to-map cursor sync, brush fit, null rail gaps, keyboard sample
   stepping, and a table alternative.
+- PR-009–012: synthetic pipeline foundation, Tokyo Metro source audit, manual
+  control-point ingestion, and N02 inventory parse adapter.
+- PR-013: OSM-shaped railway extract parse adapter (structure tags only; never
+  metric Z / rail elevation).
+- PR-014: GSI DEM-shaped ground elevation grid parse adapter (ground only).
+- PR-015: Tokyo Metro pilot corridor selection (銀座線 上野–浅草) as a
+  geometry/inventory pilot; public rail-elevation package remains blocked.
 
 ## Local Development
 

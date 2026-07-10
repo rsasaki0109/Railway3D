@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
+from railway3d_pipeline.corridor import write_corridor_plan
 from railway3d_pipeline.json_utils import read_json, sha256_hex, write_json
 from railway3d_pipeline.source_audit import load_tokyo_metro_source_audit
 from railway3d_pipeline.synthetic import SYNTHETIC_DATASET_PATH, SYNTHETIC_REGION_ID, PipelineError
@@ -34,10 +35,23 @@ def audit_source(region_id: str) -> dict[str, Any]:
 
 def fetch_source(region_id: str, output_dir: Path) -> dict[str, Any]:
     if region_id == "jp-tokyo-metro":
-        raise PipelineError(
-            "SOURCE_FETCH_NOT_IMPLEMENTED",
-            "PR-010 audits Tokyo Metro sources but does not fetch or publish raw source snapshots.",
-        )
+        # PR-015 freezes the pilot corridor plan only. Real N02/OSM/GSI bytes are not fetched.
+        plan = write_corridor_plan(region_id, output_dir)
+        manifest = {
+            "regionId": region_id,
+            "kind": "corridor-plan-only",
+            "corridorId": plan["corridorId"],
+            "selectionStatus": plan["selectionStatus"],
+            "publicPackageDecision": plan["publicPackageDecision"],
+            "checksum": plan["checksum"],
+            "note": (
+                "No raw N02, OSM PBF, or GSI DEM snapshot bytes are fetched. "
+                "Only the geometry/inventory pilot corridor plan is written."
+            ),
+            "outputs": plan["outputs"],
+        }
+        write_json(output_dir / "source-fetch-report.json", manifest)
+        return manifest
 
     dataset = load_synthetic_dataset(region_id)
     output_dir.mkdir(parents=True, exist_ok=True)
