@@ -11,8 +11,9 @@ export interface ViewStateSerializable {
 export const INITIAL_VIEW_STATE: ViewStateSerializable = {
   longitude: 139.75,
   latitude: 35.685,
-  zoom: 12,
-  pitch: 52,
+  zoom: 12.2,
+  // Steeper pitch makes vertical exaggeration (depth) easier to read.
+  pitch: 62,
   bearing: -28,
 };
 

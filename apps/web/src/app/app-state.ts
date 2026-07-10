@@ -4,6 +4,7 @@ import {
 } from '../renderer/maplibre-deck/view-state';
 import { ACTIVE_DATASET_ID, ACTIVE_LINE_ID } from '../renderer/railway/active-dataset';
 import type { Selection, VisualizationState } from '../renderer/railway/render-types';
+import { DEFAULT_PROFILE_CURSOR_CHAINAGE_M } from '../features/profile/profile-controller';
 
 export interface ViewSlice {
   view: ViewStateSerializable;
@@ -33,9 +34,10 @@ export interface AppState
   extends ViewSlice, VisualizationSlice, SelectionSlice, DataSlice, UiSlice {}
 
 export const DEFAULT_VISUALIZATION: VisualizationState = {
-  colorMode: 'line',
-  xrayMode: 'selected',
-  verticalExaggeration: 1,
+  // Clearance color + strong vertical exaggeration make underground depth readable.
+  colorMode: 'clearance',
+  xrayMode: 'all-underground',
+  verticalExaggeration: 5,
   stationVisible: true,
   labelVisible: true,
   guideVisible: true,
@@ -49,7 +51,7 @@ export const DEFAULT_APP_STATE: AppState = {
   visualization: DEFAULT_VISUALIZATION,
   selection: DEFAULT_SELECTION,
   hovered: null,
-  profileCursorChainageM: null,
+  profileCursorChainageM: DEFAULT_PROFILE_CURSOR_CHAINAGE_M,
   datasetId: ACTIVE_DATASET_ID,
   status: 'ready',
   error: null,
