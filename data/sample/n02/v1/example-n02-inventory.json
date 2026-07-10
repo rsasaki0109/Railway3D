@@ -1,0 +1,120 @@
+{
+  "documentId": "n02-sample-inventory-example-2026-07",
+  "title": "Synthetic N02-shaped railway inventory example",
+  "kind": "n02-inventory",
+  "synthetic": true,
+  "authoredBy": "Railway3D project (synthetic authoring exercise)",
+  "authoredAt": "2026-07-10",
+  "license": {
+    "id": "CC-BY-4.0",
+    "name": "Creative Commons Attribution 4.0 International",
+    "redistributionAllowed": true,
+    "attributionRequired": true
+  },
+  "sourceNote": "This is a synthetic, N02-shaped example document authored for Railway3D pipeline testing. It is NOT a real Kokudo Suuchi Jouhou (National Land Numerical Information) N02 railway extract, is not derived from any real N02 release, and must not be treated as an authoritative inventory source. Operator, line, and station names are fictional.",
+  "features": [
+    {
+      "featureClass": "RailroadSection",
+      "featureId": "sample-line-section-01",
+      "properties": {
+        "N02_002": "3",
+        "N02_003": "サンプル線",
+        "N02_004": "サンプル鉄道"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [139.70, 35.65],
+          [139.72, 35.66],
+          [139.74, 35.67]
+        ]
+      }
+    },
+    {
+      "featureClass": "RailroadSection",
+      "featureId": "mirai-line-section-01",
+      "properties": {
+        "N02_002": "3",
+        "N02_003": "みらい線",
+        "N02_004": "サンプル鉄道"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [139.75, 35.68],
+          [139.77, 35.69]
+        ]
+      }
+    },
+    {
+      "featureClass": "Station",
+      "featureId": "sample-line-station-01",
+      "properties": {
+        "N02_002": "3",
+        "N02_003": "サンプル線",
+        "N02_004": "サンプル鉄道",
+        "N02_005": "サンプル起点駅"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [139.70, 35.65]
+      }
+    },
+    {
+      "featureClass": "Station",
+      "featureId": "sample-line-station-02",
+      "properties": {
+        "N02_002": "3",
+        "N02_003": "サンプル線",
+        "N02_004": "サンプル鉄道",
+        "N02_005": "サンプル中央駅"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [139.72, 35.66]
+      }
+    },
+    {
+      "featureClass": "Station",
+      "featureId": "sample-line-station-03",
+      "properties": {
+        "N02_002": "3",
+        "N02_003": "サンプル線",
+        "N02_004": "サンプル鉄道",
+        "N02_005": "サンプル終点駅"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [139.74, 35.67]
+      }
+    },
+    {
+      "featureClass": "Station",
+      "featureId": "mirai-line-station-01",
+      "properties": {
+        "N02_002": "3",
+        "N02_003": "みらい線",
+        "N02_004": "サンプル鉄道",
+        "N02_005": "みらい入口駅"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [139.75, 35.68]
+      }
+    },
+    {
+      "featureClass": "Station",
+      "featureId": "mirai-line-station-02",
+      "properties": {
+        "N02_002": "3",
+        "N02_003": "みらい線",
+        "N02_004": "サンプル鉄道",
+        "N02_005": "みらい丘駅"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [139.77, 35.69]
+      }
+    }
+  ]
+}

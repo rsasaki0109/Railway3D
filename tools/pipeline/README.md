@@ -68,3 +68,35 @@ PR-011 limitations:
   example (`"synthetic": true`); it is not derived from any real Tokyo Metro survey.
 - The N02, OSM PBF, and GSI DEM adapters remain audit-only skeletons; this PR only promotes
   `manual-control-points`.
+
+PR-012 promotes the `n02` (国土数値情報 鉄道データ N02) adapter from an audit-only skeleton to a
+real, deterministic parser for N02-shaped railway inventory documents:
+
+```bash
+uv run --project tools/pipeline railway3d source parse-n02 data/sample/n02/v1/example-n02-inventory.json --output build/reports/example-n02-inventory.json
+uv run --project tools/pipeline railway3d source parse-n02 data/sample/n02/v1/example-n02-inventory.json --output build/reports/example-n02-inventory.md
+```
+
+This command parses an N02-shaped `FeatureCollection`-like document (`RailroadSection` and
+`Station` features carrying `N02_002`/`N02_003`/`N02_004`/`N02_005` properties), structurally
+validates it in Python (no separate JSON Schema file for the document itself), and normalizes it
+into operator/line/station inventory candidates that conform to `schemas/v1/operator.schema.json`,
+`schemas/v1/line.schema.json`, and `schemas/v1/station.schema.json`. Operators are deduped by
+運営会社 (`N02_004`) and lines by (`N02_004`, `N02_003`) across all features; entity ids are
+derived deterministically from a sha256 hash of the source Japanese names, since the shared
+`entityId` pattern only allows ASCII slug characters. The license's `redistributionAllowed` flag
+drives an explicit `publicRedistributionDecision` in the report, mirroring PR-011.
+
+N02 is a line/station/operator **inventory candidate only** source, not a rail elevation source:
+the adapter never emits a station `groundReference`, never emits a non-empty station `levels[]`
+elevation, and never emits `railElevation` anywhere. Every normalized station always has
+`"levels": []` and no `groundReference` field.
+
+PR-012 limitations:
+
+- Only the bundled synthetic, N02-shaped example fixture is parsed; there is no real fetch from
+  the 国土数値情報 (National Land Numerical Information) N02 dataset.
+- `data/sample/n02/v1/example-n02-inventory.json` is a synthetic example (`"synthetic": true`)
+  with fictional operator/line/station names; it is not derived from any real N02 release.
+- This adapter is inventory-only: it does not attempt surveyed centerline precision or any
+  elevation/Z value. The OSM PBF and GSI DEM adapters remain audit-only skeletons.

@@ -35,6 +35,7 @@ jobs:
       - run: uv sync --project tools/pipeline --frozen
       - run: uv run --project tools/pipeline railway3d --help
       - run: uv run --project tools/pipeline railway3d source ingest data/sample/manual-control-points/v1/example-control-points.json --output build/reports/example-control-points.json
+      - run: uv run --project tools/pipeline railway3d source parse-n02 data/sample/n02/v1/example-n02-inventory.json --output build/reports/example-n02-inventory.json
       - run: uv run --project tools/pipeline pytest
 
   e2e:

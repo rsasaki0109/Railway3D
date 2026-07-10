@@ -7,6 +7,7 @@ from railway3d_pipeline import __version__
 from railway3d_pipeline.control_points import control_point_report_to_markdown, load_control_point_document
 from railway3d_pipeline.diffing import diff_dataset_files, diff_to_markdown
 from railway3d_pipeline.json_utils import write_json
+from railway3d_pipeline.n02 import load_n02_inventory_document, n02_inventory_report_to_markdown
 from railway3d_pipeline.packaging import package_dataset
 from railway3d_pipeline.schema_validation import validate_dataset_file
 from railway3d_pipeline.source_audit import source_audit_to_markdown
@@ -35,6 +36,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     source_ingest_parser.add_argument("path", type=Path)
     source_ingest_parser.add_argument("--output", type=Path)
+    source_parse_n02_parser = source_subparsers.add_parser(
+        "parse-n02", help="Parse an N02-shaped railway inventory document."
+    )
+    source_parse_n02_parser.add_argument("path", type=Path)
+    source_parse_n02_parser.add_argument("--output", type=Path)
 
     build_parser_command = subparsers.add_parser("build", help="Build static dataset assets.")
     build_subparsers = build_parser_command.add_subparsers(dest="build_command")
@@ -98,6 +104,20 @@ def main(argv: list[str] | None = None) -> int:
                 else:
                     write_json(args.output, report)
             print(f"Ingested control points from {args.path}: {report['controlPointCount']} point(s)")
+            return 0
+
+        if args.command == "source" and args.source_command == "parse-n02":
+            report = load_n02_inventory_document(args.path)
+            if args.output:
+                args.output.parent.mkdir(parents=True, exist_ok=True)
+                if args.output.suffix == ".md":
+                    args.output.write_text(n02_inventory_report_to_markdown(report), encoding="utf-8")
+                else:
+                    write_json(args.output, report)
+            print(
+                f"Parsed N02 inventory from {args.path}: {report['operatorCount']} operator(s), "
+                f"{report['lineCount']} line(s), {report['stationCount']} station(s)"
+            )
             return 0
 
         if args.command == "build" and args.build_command == "region":
