@@ -1,0 +1,92 @@
+{
+  "documentId": "manual-control-points-example-2026-07",
+  "title": "Synthetic manual control point authoring example",
+  "kind": "manual-control-points",
+  "synthetic": true,
+  "authoredBy": "Railway3D project (synthetic authoring exercise)",
+  "authoredAt": "2026-07-10",
+  "verticalDatum": "JGD2024_ORTHOMETRIC",
+  "license": {
+    "id": "CC0-1.0",
+    "name": "Creative Commons Zero 1.0",
+    "redistributionAllowed": true,
+    "attributionRequired": false
+  },
+  "provenanceNote": "Synthetic example authored to demonstrate PR-011 manual control point ingestion. Not derived from any real Tokyo Metro survey, N02, OSM, or GSI DEM data.",
+  "points": [
+    {
+      "id": "r3d:jp:sample:control-point:line-a-rail-000",
+      "ownerId": "r3d:jp:sample:route:example-line-a",
+      "chainageM": 0,
+      "kind": "rail_elevation",
+      "hardConstraint": true,
+      "definition": "Top of rail at Example Station A platform end.",
+      "target": "top_of_rail",
+      "method": "surveyed",
+      "confidence": "high",
+      "sourceCitation": "Synthetic authoring note EX-001",
+      "valueM": 12.4,
+      "uncertaintyM": 0.15,
+      "note": "Synthetic example point; not a real survey value."
+    },
+    {
+      "id": "r3d:jp:sample:control-point:line-a-portal-500",
+      "ownerId": "r3d:jp:sample:route:example-line-a",
+      "chainageM": 500,
+      "kind": "portal",
+      "hardConstraint": true,
+      "definition": "Tunnel portal top-of-rail entering Example Tunnel A.",
+      "target": "tunnel_portal",
+      "method": "operator_published",
+      "confidence": "medium",
+      "sourceCitation": "Synthetic authoring note EX-002",
+      "valueM": 8.1,
+      "note": "Synthetic example point; not a real survey value."
+    },
+    {
+      "id": "r3d:jp:sample:control-point:line-a-rail-1200",
+      "ownerId": "r3d:jp:sample:route:example-line-a",
+      "chainageM": 1200,
+      "kind": "rail_elevation",
+      "hardConstraint": true,
+      "definition": "Top of rail exiting Example Tunnel A portal.",
+      "target": "top_of_rail",
+      "method": "surveyed",
+      "confidence": "high",
+      "sourceCitation": "Synthetic authoring note EX-003",
+      "valueM": 5.6,
+      "uncertaintyM": 0.2,
+      "note": "Synthetic example point; not a real survey value."
+    },
+    {
+      "id": "r3d:jp:sample:control-point:line-b-relative-300",
+      "ownerId": "r3d:jp:sample:route:example-line-b",
+      "chainageM": 300,
+      "kind": "relative_depth",
+      "hardConstraint": false,
+      "definition": "Depth below ground reference for Example Cut-and-Cover Tunnel B section.",
+      "target": "structure_boundary",
+      "method": "dem_sampled",
+      "confidence": "low",
+      "sourceCitation": "Synthetic authoring note EX-004",
+      "relativeDepthM": 9.5,
+      "uncertaintyM": 2.5,
+      "note": "Synthetic example point; not a real DEM sample."
+    },
+    {
+      "id": "r3d:jp:sample:control-point:line-b-rail-900",
+      "ownerId": "r3d:jp:sample:route:example-line-b",
+      "chainageM": 900,
+      "kind": "rail_elevation",
+      "hardConstraint": true,
+      "definition": "Top of rail at Example Station B mid-platform.",
+      "target": "top_of_rail",
+      "method": "community_verified",
+      "confidence": "medium",
+      "sourceCitation": "Synthetic authoring note EX-005",
+      "valueM": -3.2,
+      "uncertaintyM": 0.5,
+      "note": "Synthetic example point; not a real survey value."
+    }
+  ]
+}
