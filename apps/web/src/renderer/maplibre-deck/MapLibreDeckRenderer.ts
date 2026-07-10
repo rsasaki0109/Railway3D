@@ -54,6 +54,7 @@ export class MapLibreDeckRenderer {
   #overlay: MapboxOverlay | null = null;
   #options: MapLibreDeckRendererOptions | null = null;
   #ready = false;
+  #contextLost = false;
   #readyFallbackTimer: ReturnType<typeof setTimeout> | null = null;
   #visualization: VisualizationState = {
     colorMode: 'line',
@@ -75,6 +76,7 @@ export class MapLibreDeckRenderer {
 
     this.#options = options;
     this.#ready = false;
+    this.#contextLost = false;
 
     const map = new maplibregl.Map({
       container: options.container,
@@ -208,6 +210,7 @@ export class MapLibreDeckRenderer {
     this.#overlay = null;
     this.#options = null;
     this.#ready = false;
+    this.#contextLost = false;
   }
 
   get isMounted(): boolean {
@@ -224,7 +227,7 @@ export class MapLibreDeckRenderer {
   };
 
   #markReady(): void {
-    if (this.#ready) {
+    if (this.#ready || this.#contextLost) {
       return;
     }
     this.#ready = true;
@@ -249,12 +252,14 @@ export class MapLibreDeckRenderer {
   };
 
   #handleContextLost = () => {
+    this.#ready = false;
+    this.#contextLost = true;
     this.#options?.onStatusChange('context-lost');
   };
 
   #handleContextRestored = () => {
-    this.#options?.onStatusChange('ready');
-    this.#emitViewState();
+    this.#contextLost = false;
+    this.#markReady();
   };
 
   #emitViewState(): void {
