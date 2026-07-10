@@ -16,7 +16,7 @@ import type {
   VerticalExaggeration,
   XRayMode,
 } from '../../renderer/railway/render-types';
-import { syntheticRenderDataset } from '../../renderer/railway/synthetic-render-dataset';
+import { activeRenderDataset } from '../../renderer/railway/active-dataset';
 
 const basePath = import.meta.env.BASE_URL;
 const xrayModes = ['off', 'selected', 'all-underground'] as const satisfies readonly XRayMode[];
@@ -135,7 +135,7 @@ export function MapViewport() {
   };
 
   const xrayPathCount = getXRayPathCount(
-    syntheticRenderDataset,
+    activeRenderDataset,
     state.visualization.xrayMode,
     state.selection,
   );
@@ -206,7 +206,7 @@ export function MapViewport() {
             </button>
           ))}
         </div>
-        <p>Synthetic railway and terrain fixtures · no real railway data</p>
+        <p>Tokyo Metro pilot · approximate geometry · illustrative Z only</p>
         <button type="button" className="map-action" onClick={handleResetCamera}>
           Reset camera
         </button>

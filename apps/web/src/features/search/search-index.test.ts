@@ -1,31 +1,35 @@
 import { describe, expect, it } from 'vitest';
 
-import { normalizeSearchText, searchEntries, syntheticSearchEntries } from './search-index';
+import { normalizeSearchText, searchEntries, tokyoMetroSearchEntries } from './search-index';
 
 describe('search-index', () => {
   it('normalizes Japanese width, kana, spacing, and hyphens', () => {
-    expect(normalizeSearchText('ＳＹＮ－Ａ')).toBe('syna');
-    expect(normalizeSearchText('エキ エー')).toBe('えきえ');
+    expect(normalizeSearchText('Ｇ－１６')).toBe('g16');
+    expect(normalizeSearchText('うえの')).toBe('うえの');
   });
 
-  it('finds synthetic station by Japanese, kana, romaji, and station number forms', () => {
-    expect(searchEntries(syntheticSearchEntries, '駅A')[0]?.primaryName).toBe('Station A');
-    expect(searchEntries(syntheticSearchEntries, 'エキエー')[0]?.primaryName).toBe('Station A');
-    expect(searchEntries(syntheticSearchEntries, 'eki a')[0]?.primaryName).toBe('Station A');
-    expect(searchEntries(syntheticSearchEntries, 'SYN-A')[0]?.primaryName).toBe('Station A');
+  it('finds Tokyo Metro stations by Japanese and station number', () => {
+    expect(searchEntries(tokyoMetroSearchEntries, '上野')[0]?.primaryName).toBe('上野');
+    expect(searchEntries(tokyoMetroSearchEntries, 'G-16')[0]?.primaryName).toBe('上野');
+    expect(searchEntries(tokyoMetroSearchEntries, '渋谷')[0]?.primaryName).toBe('渋谷');
+  });
+
+  it('finds Ginza and Marunouchi lines', () => {
+    expect(searchEntries(tokyoMetroSearchEntries, '銀座線')[0]?.kind).toBe('line');
+    expect(searchEntries(tokyoMetroSearchEntries, '丸ノ内線')[0]?.primaryName).toBe('丸ノ内線');
   });
 
   it('limits one-character queries', () => {
-    expect(searchEntries(syntheticSearchEntries, 's')).toHaveLength(4);
+    expect(searchEntries(tokyoMetroSearchEntries, 'g')).toHaveLength(4);
   });
 
-  it('distinguishes same-name station candidates by line and region', () => {
-    const echoResults = searchEntries(syntheticSearchEntries, 'Station Echo', { limit: 4 });
+  it('distinguishes same-name station candidates by line', () => {
+    const ginzaResults = searchEntries(tokyoMetroSearchEntries, '銀座', { limit: 8 }).filter(
+      (entry) => entry.kind === 'station' && entry.primaryName === '銀座',
+    );
 
-    expect(echoResults).toHaveLength(2);
-    expect(echoResults[0]?.subtitle).toContain('North Fixture Branch');
-    expect(echoResults[0]?.subtitle).toContain('Synthetic North');
-    expect(echoResults[1]?.subtitle).toContain('South Fixture Branch');
-    expect(echoResults[1]?.subtitle).toContain('Synthetic South');
+    expect(ginzaResults.length).toBeGreaterThanOrEqual(2);
+    expect(ginzaResults.some((entry) => entry.subtitle.includes('銀座線'))).toBe(true);
+    expect(ginzaResults.some((entry) => entry.subtitle.includes('丸ノ内線'))).toBe(true);
   });
 });

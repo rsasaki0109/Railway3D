@@ -2,7 +2,7 @@ import {
   INITIAL_VIEW_STATE,
   type ViewStateSerializable,
 } from '../renderer/maplibre-deck/view-state';
-import { SYNTHETIC_LINE_ID } from '../renderer/railway/synthetic-render-dataset';
+import { ACTIVE_DATASET_ID, ACTIVE_LINE_ID } from '../renderer/railway/active-dataset';
 import type { Selection, VisualizationState } from '../renderer/railway/render-types';
 
 export interface ViewSlice {
@@ -42,7 +42,7 @@ export const DEFAULT_VISUALIZATION: VisualizationState = {
   uncertaintyVisible: true,
 };
 
-export const DEFAULT_SELECTION: Selection = { kind: 'line', id: SYNTHETIC_LINE_ID };
+export const DEFAULT_SELECTION: Selection = { kind: 'line', id: ACTIVE_LINE_ID };
 
 export const DEFAULT_APP_STATE: AppState = {
   view: INITIAL_VIEW_STATE,
@@ -50,7 +50,7 @@ export const DEFAULT_APP_STATE: AppState = {
   selection: DEFAULT_SELECTION,
   hovered: null,
   profileCursorChainageM: null,
-  datasetId: 'synthetic-render-fixture',
+  datasetId: ACTIVE_DATASET_ID,
   status: 'ready',
   error: null,
   activePanel: 'search',

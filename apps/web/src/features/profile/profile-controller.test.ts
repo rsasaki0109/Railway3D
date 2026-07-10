@@ -28,21 +28,20 @@ describe('profile-controller', () => {
     ]);
   });
 
-  it('loads only the synthetic line profile', async () => {
+  it('loads synthetic and Tokyo Metro Ginza profiles by line id', async () => {
     await expect(
       loadSyntheticProfileForSelection({ kind: 'line', id: SYNTHETIC_LINE_ID }),
     ).resolves.toBe(syntheticElevationProfile);
     await expect(
       loadSyntheticProfileForSelection({ kind: 'station', id: 'r3d:zz:synthetic:station:A' }),
-    ).rejects.toThrow('Golden Fixture Line');
+    ).rejects.toThrow('銀座線');
   });
 
   it('steps the cursor by sample without inventing values inside the null gap', () => {
-    expect(stepProfileCursor(syntheticElevationProfile, DEFAULT_PROFILE_CURSOR_CHAINAGE_M, 1)).toBe(
-      1500,
-    );
+    expect(stepProfileCursor(syntheticElevationProfile, 1000, 1)).toBe(1500);
     expect(stepProfileCursor(syntheticElevationProfile, 1500, 1)).toBe(2000);
     expect(findNearestProfileSample(syntheticElevationProfile, 2000).railElevationM).toBeNull();
+    expect(DEFAULT_PROFILE_CURSOR_CHAINAGE_M).toBe(2400);
   });
 
   it('fits a profile brush range to a deterministic map view', () => {

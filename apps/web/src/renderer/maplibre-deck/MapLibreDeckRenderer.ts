@@ -7,7 +7,7 @@ import maplibregl, {
   type Map,
 } from 'maplibre-gl';
 
-import { createRailway3DMapStyle, SYNTHETIC_DEM_SOURCE_ID } from './map-style';
+import { createRailway3DMapStyle, GSI_ATTRIBUTION } from './map-style';
 import {
   INITIAL_VIEW_STATE,
   toMapJumpOptions,
@@ -16,10 +16,10 @@ import {
 } from './view-state';
 import { buildRailwayLayers } from '../railway/layer-factory';
 import {
-  SYNTHETIC_LINE_ID,
-  resolveSyntheticProfileCursor,
-  syntheticRenderDataset,
-} from '../railway/synthetic-render-dataset';
+  ACTIVE_LINE_ID,
+  activeRenderDataset,
+  resolveActiveProfileCursor,
+} from '../railway/active-dataset';
 import type { Selection, VisualizationState } from '../railway/render-types';
 
 export type MapRendererStatus =
@@ -53,8 +53,6 @@ export class MapLibreDeckRenderer {
   #map: Map | null = null;
   #overlay: MapboxOverlay | null = null;
   #options: MapLibreDeckRendererOptions | null = null;
-  #terrainEnabled = true;
-  #styleLoaded = false;
   #visualization: VisualizationState = {
     colorMode: 'line',
     xrayMode: 'selected',
@@ -64,7 +62,7 @@ export class MapLibreDeckRenderer {
     guideVisible: true,
     uncertaintyVisible: true,
   };
-  #selection: Selection = { kind: 'line', id: SYNTHETIC_LINE_ID };
+  #selection: Selection = { kind: 'line', id: ACTIVE_LINE_ID };
   #hovered: Selection = null;
   #profileCursorChainageM: number | null = null;
 
@@ -74,8 +72,6 @@ export class MapLibreDeckRenderer {
     }
 
     this.#options = options;
-    this.#terrainEnabled = true;
-    this.#styleLoaded = false;
 
     const map = new maplibregl.Map({
       container: options.container,
@@ -101,7 +97,10 @@ export class MapLibreDeckRenderer {
     map.addControl(
       new AttributionControl({
         compact: false,
-        customAttribution: 'Synthetic Railway3D terrain fixture',
+        customAttribution: [
+          GSI_ATTRIBUTION,
+          'Tokyo Metro pilot geometry is approximate public station locations; Z is illustrative only',
+        ],
       }),
       'bottom-right',
     );
@@ -121,7 +120,6 @@ export class MapLibreDeckRenderer {
 
   setVisualization(visualization: VisualizationState): void {
     this.#visualization = visualization;
-    this.#setTerrainExaggeration();
     this.#syncLayers();
   }
 
@@ -195,7 +193,6 @@ export class MapLibreDeckRenderer {
     this.#map = null;
     this.#overlay = null;
     this.#options = null;
-    this.#styleLoaded = false;
   }
 
   get isMounted(): boolean {
@@ -203,8 +200,6 @@ export class MapLibreDeckRenderer {
   }
 
   #handleLoad = () => {
-    this.#styleLoaded = true;
-    this.#setTerrainExaggeration();
     this.#options?.onStatusChange('ready');
     this.#emitViewState();
   };
@@ -214,17 +209,10 @@ export class MapLibreDeckRenderer {
   };
 
   #handleMapError = (event: ErrorEvent) => {
-    const sourceId = 'sourceId' in event ? event.sourceId : undefined;
-    const shouldFallbackFromTerrain =
-      this.#terrainEnabled && (sourceId === undefined || sourceId === SYNTHETIC_DEM_SOURCE_ID);
-
-    if (!shouldFallbackFromTerrain) {
-      return;
+    // Raster basemap failures are non-fatal; keep the railway overlay interactive.
+    if ('error' in event && event.error !== undefined) {
+      console.warn('MapLibre error', event.error);
     }
-
-    this.#terrainEnabled = false;
-    this.#map?.setTerrain(null);
-    this.#options?.onStatusChange('terrain-fallback');
   };
 
   #handleContextLost = () => {
@@ -232,9 +220,7 @@ export class MapLibreDeckRenderer {
   };
 
   #handleContextRestored = () => {
-    this.#styleLoaded = this.#map?.isStyleLoaded() === true;
-    this.#setTerrainExaggeration();
-    this.#options?.onStatusChange(this.#terrainEnabled ? 'ready' : 'terrain-fallback');
+    this.#options?.onStatusChange('ready');
     this.#emitViewState();
   };
 
@@ -255,26 +241,14 @@ export class MapLibreDeckRenderer {
     map.removeControl(overlay);
   }
 
-  #setTerrainExaggeration(): void {
-    const map = this.#map;
-    if (!this.#terrainEnabled || map === null || !this.#styleLoaded) {
-      return;
-    }
-
-    map.setTerrain({
-      source: SYNTHETIC_DEM_SOURCE_ID,
-      exaggeration: this.#visualization.verticalExaggeration,
-    });
-  }
-
   #syncLayers(): void {
     this.#overlay?.setProps({
       layers: buildRailwayLayers({
-        dataset: syntheticRenderDataset,
+        dataset: activeRenderDataset,
         visualization: this.#visualization,
         selection: this.#selection,
         hovered: this.#hovered,
-        profileCursor: resolveSyntheticProfileCursor(
+        profileCursor: resolveActiveProfileCursor(
           this.#profileCursorChainageM,
           this.#visualization.verticalExaggeration,
         ),

@@ -9,14 +9,14 @@
   "horizontalCrs": "EPSG:6668",
   "verticalDatum": "JGD2011_ORTHOMETRIC",
   "role": "ground_elevation",
-  "bbox": [139.7000, 35.6500, 139.7020, 35.6520],
+  "bbox": [139.7, 35.65, 139.702, 35.652],
   "grid": {
     "columns": 3,
     "rows": 2,
     "cellSizeDeg": 0.001,
     "origin": {
-      "lng": 139.7000,
-      "lat": 35.6500,
+      "lng": 139.7,
+      "lat": 35.65,
       "corner": "southwest"
     }
   },

@@ -29,8 +29,9 @@ export function App() {
             <p className="eyebrow">Static-first 3D Railway Geospatial Platform</p>
             <h1 id="app-title">Railway3D</h1>
             <p id="app-summary" className="summary">
-              {getBuildStatusText()}. PR-008 adds the synthetic elevation profile, SVG cursor sync,
-              null rail gaps, and a table alternative. Real railway data is not implemented yet.
+              {getBuildStatusText()}. Tokyo Metro pilot: 銀座線 and 丸ノ内線 on a GSI basemap.
+              Station locations are approximate public coordinates; rail elevations are illustrative
+              only and not surveyed.
             </p>
           </div>
           <SearchCommand />

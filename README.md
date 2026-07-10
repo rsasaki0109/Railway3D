@@ -9,11 +9,11 @@ Static-first 3D railway geospatial platform.
 ## Status
 
 This repository is in early bootstrap. The current site is a development build
-that verifies the workspace, static deployment path, test setup, schema/domain
-foundation, data-client skeleton, MapLibre/deck.gl map shell, and synthetic
-railway rendering/search/selection layers, visualization modes, dynamic legend,
-layer controls, and the synthetic SVG elevation profile. It does not render real
-railway data yet.
+that shows a **Tokyo Metro pilot** (銀座線 / 丸ノ内線) on a 国土地理院 basemap
+with search, selection, visualization modes, and an illustrative elevation
+profile. Station coordinates are approximate public locations; rail elevations
+are **illustrative only** (not surveyed) and must not be used for navigation or
+clearance design.
 
 Implemented milestones:
 
@@ -47,6 +47,8 @@ Implemented milestones:
 - PR-014: GSI DEM-shaped ground elevation grid parse adapter (ground only).
 - PR-015: Tokyo Metro pilot corridor selection (銀座線 上野–浅草) as a
   geometry/inventory pilot; public rail-elevation package remains blocked.
+- PR-016: GitHub Pages Tokyo Metro pilot — GSI basemap, 銀座線/丸ノ内線
+  approximate geometry, Japanese search, illustrative profile (not surveyed Z).
 
 ## Local Development
 
