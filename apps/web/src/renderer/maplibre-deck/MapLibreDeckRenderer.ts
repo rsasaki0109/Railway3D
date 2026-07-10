@@ -186,6 +186,11 @@ export class MapLibreDeckRenderer {
       return;
     }
 
+    if (this.#readyFallbackTimer !== null) {
+      clearTimeout(this.#readyFallbackTimer);
+      this.#readyFallbackTimer = null;
+    }
+
     map.off('load', this.#handleLoad);
     map.off('idle', this.#handleIdleReady);
     map.off('moveend', this.#handleMoveEnd);
@@ -202,6 +207,7 @@ export class MapLibreDeckRenderer {
     this.#map = null;
     this.#overlay = null;
     this.#options = null;
+    this.#ready = false;
   }
 
   get isMounted(): boolean {
@@ -218,6 +224,14 @@ export class MapLibreDeckRenderer {
   };
 
   #markReady(): void {
+    if (this.#ready) {
+      return;
+    }
+    this.#ready = true;
+    if (this.#readyFallbackTimer !== null) {
+      clearTimeout(this.#readyFallbackTimer);
+      this.#readyFallbackTimer = null;
+    }
     this.#options?.onStatusChange('ready');
     this.#emitViewState();
   }
