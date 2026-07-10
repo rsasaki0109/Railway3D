@@ -87,7 +87,11 @@ def source_audit_to_markdown(audit: dict[str, Any]) -> str:
 
     lines.extend(["", "## Candidate Pilot Corridors"])
     for candidate in audit["candidatePilotCorridors"]:
-        lines.append(f"- {candidate['name']}: {candidate['reason']}")
+        status = candidate.get("status")
+        status_suffix = f" [{status}]" if status else ""
+        corridor_id = candidate.get("id")
+        id_prefix = f"`{corridor_id}` " if corridor_id else ""
+        lines.append(f"- {id_prefix}{candidate['name']}{status_suffix}: {candidate['reason']}")
 
     lines.extend(["", "## Unresolved Questions"])
     lines.extend(f"- {item}" for item in audit["unresolvedQuestions"])
@@ -98,9 +102,19 @@ def source_audit_to_markdown(audit: dict[str, Any]) -> str:
             "## PR-010 Decision",
             "",
             "No Tokyo Metro public dataset assets are generated in PR-010. The next milestone must choose fixed snapshots and approved control-point sources before any real geometry or elevation values are packaged.",
+            "",
+            "## PR-015 Decision",
+            "",
+            "Pilot corridor `jp-tokyo-metro-ginza-ueno-asakusa` (銀座線 上野–浅草) is selected as a geometry/inventory pilot only. "
+            "OSM and GSI DEM adapters can parse synthetic fixtures; real N02/OSM/GSI bytes are still not fetched. "
+            "Public Tokyo Metro packages and rail elevation packaging remain blocked until approved control points and fixed real snapshots exist.",
         ]
     )
-    return "\n".join(lines) + "\n"
+    if audit.get("pilotCorridorPlanPath"):
+        lines.extend(["", f"Pilot corridor plan: `{audit['pilotCorridorPlanPath']}`", ""])
+    else:
+        lines.append("")
+    return "\n".join(lines)
 
 
 def format_boolish(value: object) -> str:

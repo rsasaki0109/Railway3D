@@ -1,0 +1,114 @@
+{
+  "regionId": "jp-tokyo-metro",
+  "kind": "pilot-corridor-selection",
+  "title": "Tokyo Metro geometry/inventory pilot corridor selection",
+  "selectedAt": "2026-07-10",
+  "selectionStatus": "geometry-inventory-pilot",
+  "scope": "PR-015 selects a short Tokyo Metro corridor for inventory, OSM structure-tag, and ground-DEM adapter wiring only. No rail elevation package and no public Tokyo Metro dataset are published.",
+  "corridor": {
+    "id": "jp-tokyo-metro-ginza-ueno-asakusa",
+    "name": {
+      "ja": "東京メトロ銀座線 上野–浅草",
+      "en": "Tokyo Metro Ginza Line Ueno–Asakusa"
+    },
+    "operatorName": "東京地下鉄株式会社",
+    "lineName": "銀座線",
+    "fromStation": "上野",
+    "toStation": "浅草",
+    "approxBounds": [139.770, 35.708, 139.800, 35.715],
+    "rationale": [
+      "Short, continuous urban subway segment suitable for adapter integration tests.",
+      "Covered by national railway inventory sources (N02 role) as line/station inventory candidate.",
+      "Likely OSM structure-tag coverage for underground alignment hints (not metric Z).",
+      "Falls inside standard GSI DEM national ground-elevation coverage.",
+      "Does not imply any approved public rail elevation or relative-depth control source."
+    ]
+  },
+  "selectionCriteria": [
+    {
+      "id": "inventory-candidate",
+      "description": "Corridor must be representable as N02-style operator/line/station inventory candidates.",
+      "required": true
+    },
+    {
+      "id": "osm-structure-candidate",
+      "description": "Corridor must be a plausible OSM railway extract target for structure tags only (tunnel/bridge/layer as hints).",
+      "required": true
+    },
+    {
+      "id": "gsi-dem-ground-coverage",
+      "description": "Corridor bounds must lie inside a planned GSI DEM ground-elevation product coverage.",
+      "required": true
+    },
+    {
+      "id": "no-public-rail-elevation-claim",
+      "description": "Selection must explicitly refuse public rail-elevation packaging until approved control points exist.",
+      "required": true
+    },
+    {
+      "id": "redistribution-gate",
+      "description": "Public package remains blocked while any required source has unknown or disallowed redistribution.",
+      "required": true
+    }
+  ],
+  "criteriaResults": {
+    "inventory-candidate": {
+      "status": "pass",
+      "evidence": "Corridor is a named Tokyo Metro passenger line segment; N02 adapter role is inventory-only."
+    },
+    "osm-structure-candidate": {
+      "status": "pass",
+      "evidence": "OSM parse adapter accepts synthetic railway ways/stations; real snapshot remains planned-not-fetched."
+    },
+    "gsi-dem-ground-coverage": {
+      "status": "pass",
+      "evidence": "Bounds are within Tokyo; GSI DEM adapter accepts ground grids only with known vertical datum."
+    },
+    "no-public-rail-elevation-claim": {
+      "status": "pass",
+      "evidence": "selectionStatus is geometry-inventory-pilot; publicPackageDecision is blocked for elevation package."
+    },
+    "redistribution-gate": {
+      "status": "pass",
+      "evidence": "No public Tokyo Metro package is emitted; only this selection plan and synthetic adapter fixtures may be published."
+    }
+  },
+  "fixedSnapshots": {
+    "n02": {
+      "adapter": "n02",
+      "plannedVersion": "2025年度（令和7年度）版",
+      "status": "planned-not-fetched",
+      "role": "Line/station/operator inventory candidate only",
+      "localSyntheticFixture": "data/sample/n02/v1/example-n02-inventory.json"
+    },
+    "osm-pbf": {
+      "adapter": "osm-pbf",
+      "plannedExtract": "Kanto railway extract snapshot not fetched in PR-015",
+      "status": "planned-not-fetched",
+      "role": "Detailed alignment and structure-tag candidate only; never metric Z",
+      "localSyntheticFixture": "data/sample/osm/v1/example-osm-railway-extract.json"
+    },
+    "gsi-dem": {
+      "adapter": "gsi-dem",
+      "plannedProduct": "DEM product and mesh revision not fixed to a retrieved snapshot in PR-015",
+      "status": "planned-not-fetched",
+      "role": "Ground elevation / terrain only; never rail elevation",
+      "localSyntheticFixture": "data/sample/gsi-dem/v1/example-gsi-dem-grid.json"
+    },
+    "manual-control-points": {
+      "adapter": "manual-control-points",
+      "plannedRegistry": "No Tokyo Metro public rail elevation controls approved",
+      "status": "blocked-no-approved-public-controls",
+      "role": "Future rail elevation / relative depth after license and definition review",
+      "localSyntheticFixture": "data/sample/manual-control-points/v1/example-control-points.json"
+    }
+  },
+  "publicPackageDecision": "blocked: geometry-inventory pilot only. Do not publish real Tokyo Metro geometry, DEM, or elevation packages until fixed real snapshots, ODbL/GSI redistribution handling, and approved rail elevation controls are in place.",
+  "unresolvedGates": [
+    "Fetch and pin exact N02 release bytes for the corridor inventory extract.",
+    "Choose OSM PBF provider + snapshot date and keep ODbL-derived outputs license-separated.",
+    "Choose exact GSI DEM mesh product/revision and confirm post-2025-07-31 datum metadata.",
+    "Obtain redistribution-approved rail elevation or relative-depth controls before any public Z package.",
+    "Conflation review process for N02 inventory vs OSM geometry conflicts remains open."
+  ]
+}

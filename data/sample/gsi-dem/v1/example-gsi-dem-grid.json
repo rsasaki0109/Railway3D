@@ -1,0 +1,35 @@
+{
+  "documentId": "gsi-dem-sample-grid-example-2026-07",
+  "title": "Synthetic GSI DEM-shaped ground elevation grid example",
+  "kind": "gsi-dem-grid",
+  "synthetic": true,
+  "authoredBy": "Railway3D project (synthetic authoring exercise)",
+  "authoredAt": "2026-07-10",
+  "product": "DEM5A-shaped synthetic mesh (not a real GSI product)",
+  "horizontalCrs": "EPSG:6668",
+  "verticalDatum": "JGD2011_ORTHOMETRIC",
+  "role": "ground_elevation",
+  "bbox": [139.7000, 35.6500, 139.7020, 35.6520],
+  "grid": {
+    "columns": 3,
+    "rows": 2,
+    "cellSizeDeg": 0.001,
+    "origin": {
+      "lng": 139.7000,
+      "lat": 35.6500,
+      "corner": "southwest"
+    }
+  },
+  "license": {
+    "id": "GSI-CONTENT-TERMS-PDL-1.0",
+    "name": "国土地理院コンテンツ利用規約 / 公共データ利用規約 1.0",
+    "redistributionAllowed": true,
+    "attributionRequired": true
+  },
+  "sourceNote": "This is a synthetic, GSI DEM-shaped ground elevation grid authored for Railway3D pipeline testing. It is NOT a real 基盤地図情報 数値標高モデル product, is not derived from any real GSI DEM release, and must not be treated as an authoritative elevation source. Values are fictional. DEM samples are ground elevation only and must never be used as rail elevation controls.",
+  "voidValue": -9999,
+  "values": [
+    [12.5, 13.0, 13.5],
+    [12.0, -9999, 14.0]
+  ]
+}

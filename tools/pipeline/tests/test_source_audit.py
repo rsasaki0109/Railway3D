@@ -5,7 +5,6 @@ from pathlib import Path
 from railway3d_pipeline.cli import main
 from railway3d_pipeline.source_audit import load_tokyo_metro_source_audit, source_audit_to_markdown
 from railway3d_pipeline.source_registry import audit_source, fetch_source
-from railway3d_pipeline.synthetic import PipelineError
 
 
 def test_tokyo_metro_source_audit_has_required_sections() -> None:
@@ -20,7 +19,9 @@ def test_tokyo_metro_source_audit_has_required_sections() -> None:
         "manual-control-points",
     }
     assert "Do not publish a Tokyo Metro dataset package" in audit["publicRedistributionDecision"]
-    assert audit["candidatePilotCorridors"][0]["name"] == "Not selected in PR-010"
+    assert audit["candidatePilotCorridors"][0]["id"] == "jp-tokyo-metro-ginza-ueno-asakusa"
+    assert audit["candidatePilotCorridors"][0]["status"] == "selected-geometry-inventory-pilot"
+    assert audit["pilotCorridorPlanPath"] == "data/regions/jp/tokyo-metro-pilot-corridor.json"
 
 
 def test_tokyo_metro_source_audit_markdown_contains_mandatory_items() -> None:
@@ -33,6 +34,8 @@ def test_tokyo_metro_source_audit_markdown_contains_mandatory_items() -> None:
     assert "## Unresolved Questions" in markdown
     assert "OSM layer" in markdown
     assert "No Tokyo Metro public dataset assets are generated in PR-010" in markdown
+    assert "PR-015 Decision" in markdown
+    assert "jp-tokyo-metro-ginza-ueno-asakusa" in markdown
 
 
 def test_tokyo_metro_source_audit_cli_writes_markdown(tmp_path: Path) -> None:
@@ -44,10 +47,10 @@ def test_tokyo_metro_source_audit_cli_writes_markdown(tmp_path: Path) -> None:
     assert output.read_text(encoding="utf-8").startswith("# Tokyo Metro Source Audit")
 
 
-def test_tokyo_metro_source_fetch_is_explicitly_not_implemented(tmp_path: Path) -> None:
-    try:
-        fetch_source("jp-tokyo-metro", tmp_path)
-    except PipelineError as error:
-        assert error.code == "SOURCE_FETCH_NOT_IMPLEMENTED"
-    else:
-        raise AssertionError("Expected SOURCE_FETCH_NOT_IMPLEMENTED")
+def test_tokyo_metro_source_fetch_writes_corridor_plan_only(tmp_path: Path) -> None:
+    report = fetch_source("jp-tokyo-metro", tmp_path)
+
+    assert report["kind"] == "corridor-plan-only"
+    assert report["corridorId"] == "jp-tokyo-metro-ginza-ueno-asakusa"
+    assert (tmp_path / "pilot-corridor-plan.json").is_file()
+    assert (tmp_path / "source-fetch-report.json").is_file()

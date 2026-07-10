@@ -5,9 +5,12 @@ from pathlib import Path
 
 from railway3d_pipeline import __version__
 from railway3d_pipeline.control_points import control_point_report_to_markdown, load_control_point_document
+from railway3d_pipeline.corridor import write_corridor_plan
 from railway3d_pipeline.diffing import diff_dataset_files, diff_to_markdown
+from railway3d_pipeline.gsi_dem import gsi_dem_report_to_markdown, load_gsi_dem_grid
 from railway3d_pipeline.json_utils import write_json
 from railway3d_pipeline.n02 import load_n02_inventory_document, n02_inventory_report_to_markdown
+from railway3d_pipeline.osm import load_osm_railway_extract, osm_extract_report_to_markdown
 from railway3d_pipeline.packaging import package_dataset
 from railway3d_pipeline.schema_validation import validate_dataset_file
 from railway3d_pipeline.source_audit import source_audit_to_markdown
@@ -41,6 +44,23 @@ def build_parser() -> argparse.ArgumentParser:
     )
     source_parse_n02_parser.add_argument("path", type=Path)
     source_parse_n02_parser.add_argument("--output", type=Path)
+    source_parse_osm_parser = source_subparsers.add_parser(
+        "parse-osm", help="Parse an OSM-shaped railway extract document."
+    )
+    source_parse_osm_parser.add_argument("path", type=Path)
+    source_parse_osm_parser.add_argument("--output", type=Path)
+    source_parse_gsi_parser = source_subparsers.add_parser(
+        "parse-gsi-dem", help="Parse a GSI DEM-shaped ground elevation grid document."
+    )
+    source_parse_gsi_parser.add_argument("path", type=Path)
+    source_parse_gsi_parser.add_argument("--output", type=Path)
+    source_plan_corridor_parser = source_subparsers.add_parser(
+        "plan-corridor", help="Write a Tokyo Metro pilot corridor plan package."
+    )
+    source_plan_corridor_parser.add_argument("region", help="Region id (jp-tokyo-metro).")
+    source_plan_corridor_parser.add_argument(
+        "--output", type=Path, default=Path("build/plans/jp-tokyo-metro")
+    )
 
     build_parser_command = subparsers.add_parser("build", help="Build static dataset assets.")
     build_subparsers = build_parser_command.add_subparsers(dest="build_command")
@@ -92,7 +112,13 @@ def main(argv: list[str] | None = None) -> int:
 
         if args.command == "source" and args.source_command == "fetch":
             report = fetch_source(args.region, args.output)
-            print(f"Fetched source snapshot for {args.region}: {report['checksum']}")
+            if report.get("kind") == "corridor-plan-only":
+                print(
+                    f"Wrote corridor plan only for {args.region}: {report['corridorId']} "
+                    f"{report['checksum']}"
+                )
+            else:
+                print(f"Fetched source snapshot for {args.region}: {report['checksum']}")
             return 0
 
         if args.command == "source" and args.source_command == "ingest":
@@ -117,6 +143,42 @@ def main(argv: list[str] | None = None) -> int:
             print(
                 f"Parsed N02 inventory from {args.path}: {report['operatorCount']} operator(s), "
                 f"{report['lineCount']} line(s), {report['stationCount']} station(s)"
+            )
+            return 0
+
+        if args.command == "source" and args.source_command == "parse-osm":
+            report = load_osm_railway_extract(args.path)
+            if args.output:
+                args.output.parent.mkdir(parents=True, exist_ok=True)
+                if args.output.suffix == ".md":
+                    args.output.write_text(osm_extract_report_to_markdown(report), encoding="utf-8")
+                else:
+                    write_json(args.output, report)
+            print(
+                f"Parsed OSM extract from {args.path}: {report['segmentCount']} segment(s), "
+                f"{report['stationCount']} station(s)"
+            )
+            return 0
+
+        if args.command == "source" and args.source_command == "parse-gsi-dem":
+            report = load_gsi_dem_grid(args.path)
+            if args.output:
+                args.output.parent.mkdir(parents=True, exist_ok=True)
+                if args.output.suffix == ".md":
+                    args.output.write_text(gsi_dem_report_to_markdown(report), encoding="utf-8")
+                else:
+                    write_json(args.output, report)
+            print(
+                f"Parsed GSI DEM grid from {args.path}: {report['sampleCount']} sample(s) "
+                f"({report['knownSampleCount']} known, {report['voidSampleCount']} void)"
+            )
+            return 0
+
+        if args.command == "source" and args.source_command == "plan-corridor":
+            plan = write_corridor_plan(args.region, args.output)
+            print(
+                f"Wrote pilot corridor plan for {args.region}: {plan['corridorId']} "
+                f"({plan['selectionStatus']})"
             )
             return 0
 
