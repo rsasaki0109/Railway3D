@@ -17,6 +17,7 @@ import type {
   XRayMode,
 } from '../../renderer/railway/render-types';
 import { activeRenderDataset } from '../../renderer/railway/active-dataset';
+import { tokyoMetroProfileCursorSamples } from '../../renderer/railway/tokyo-metro-render-dataset';
 
 const basePath = import.meta.env.BASE_URL;
 const xrayModes = ['off', 'selected', 'all-underground'] as const satisfies readonly XRayMode[];
@@ -140,6 +141,10 @@ export function MapViewport() {
     state.selection,
   );
   const selectionLabel = getSelectionDisplay(state.selection).title;
+  const heightReadout = formatHeightReadout(
+    state.profileCursorChainageM,
+    state.visualization.verticalExaggeration,
+  );
 
   return (
     <div className="map-viewport" data-testid="map-viewport">
@@ -155,6 +160,9 @@ export function MapViewport() {
           {state.profileCursorChainageM === null
             ? 'none'
             : `${state.profileCursorChainageM.toFixed(1)} m`}
+        </p>
+        <p className="height-readout" data-testid="height-readout">
+          {heightReadout}
         </p>
       </div>
       <div className="map-overlay map-overlay-bottom">
@@ -207,10 +215,47 @@ export function MapViewport() {
           ))}
         </div>
         <p>Tokyo Metro pilot · approximate geometry · illustrative Z only</p>
+        <p className="height-hint">
+          Yellow stem = ground→rail depth · Vertical ×{state.visualization.verticalExaggeration}{' '}
+          amplifies height
+        </p>
         <button type="button" className="map-action" onClick={handleResetCamera}>
           Reset camera
         </button>
       </div>
     </div>
   );
+}
+
+function formatHeightReadout(
+  chainageM: number | null,
+  verticalExaggeration: VerticalExaggeration,
+): string {
+  if (chainageM === null) {
+    return `Height: enable profile cursor · Vertical ×${verticalExaggeration}`;
+  }
+
+  const firstSample = tokyoMetroProfileCursorSamples[0];
+  if (firstSample === undefined) {
+    return `Height: no samples · Vertical ×${verticalExaggeration}`;
+  }
+
+  const sample =
+    tokyoMetroProfileCursorSamples.find((entry) => entry.chainageM === chainageM) ??
+    tokyoMetroProfileCursorSamples.reduce(
+      (nearest, entry) =>
+        Math.abs(entry.chainageM - chainageM) < Math.abs(nearest.chainageM - chainageM)
+          ? entry
+          : nearest,
+      firstSample,
+    );
+
+  if (!sample.railElevationKnown) {
+    return `Height: rail unknown · Vertical ×${verticalExaggeration}`;
+  }
+
+  const rail = sample.position[2];
+  const ground = sample.groundPosition[2];
+  const depth = ground - rail;
+  return `Height: rail ${rail.toFixed(0)} m · ground ${ground.toFixed(0)} m · depth ${depth.toFixed(0)} m (×${verticalExaggeration})`;
 }

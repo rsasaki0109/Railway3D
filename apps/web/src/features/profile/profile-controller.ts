@@ -167,17 +167,25 @@ export const tokyoMetroGinzaElevationProfile: SyntheticElevationProfile = {
   totalLengthM: (tokyoMetroStationCatalog.ginza.length - 1) * TOKYO_METRO_PROFILE_SAMPLE_INTERVAL_M,
   samples: tokyoMetroStationCatalog.ginza.map((station, index) => {
     const chainageM = index * TOKYO_METRO_PROFILE_SAMPLE_INTERVAL_M;
-    const groundElevationM = 12 + (index % 5);
+    const groundElevationM = 14 + (index % 4) * 1.5;
     const railKnown = station.number !== 'G-10';
     const railElevationM = railKnown ? station.position[2] : null;
     const clearanceM = railElevationM === null ? null : railElevationM - groundElevationM;
+    const previous = tokyoMetroStationCatalog.ginza[index - 1];
+    const gradientPermille =
+      railKnown && previous !== undefined
+        ? ((station.position[2] - previous.position[2]) / TOKYO_METRO_PROFILE_SAMPLE_INTERVAL_M) *
+          1000
+        : railKnown
+          ? 0
+          : null;
     return {
       chainageM,
       position: [station.position[0], station.position[1]] as const,
       railElevationM,
       groundElevationM,
       clearanceM,
-      gradientPermille: railKnown ? 8 : null,
+      gradientPermille,
       uncertaintyM: railKnown ? 4 : 8,
       structure: 'underground_tunnel' as const,
       confidence: 'low' as const,

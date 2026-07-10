@@ -40,6 +40,8 @@ describe('buildRailwayLayers', () => {
       'station-points',
       'station-labels',
       'selection-halo',
+      'profile-cursor-ground',
+      'profile-cursor-stem',
       'profile-cursor',
       'vertical-guide',
     ]);

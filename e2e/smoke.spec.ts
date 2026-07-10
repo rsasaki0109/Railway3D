@@ -51,15 +51,18 @@ test('switches X-ray modes and vertical exaggeration', async ({ page }) => {
   await page.goto('./');
 
   await waitForMapReady(page);
-  await expect(page.getByTestId('xray-status')).toContainText('selected · 1 path');
-  await expect(page.getByTestId('legend-badge-X-ray selected')).toBeVisible();
+  await expect(page.getByTestId('xray-status')).toContainText('all-underground · 2 paths');
+  await expect(page.getByTestId('legend-badge-X-ray all-underground')).toBeVisible();
+  await expect(page.getByTestId('vex-status')).toContainText('Vertical ×5');
+  await expect(page.getByTestId('legend-badge-Vertical x5')).toBeVisible();
+  await expect(page.getByTestId('height-readout')).toContainText('depth');
 
   await page.getByTestId('xray-off').click();
   await expect(page.getByTestId('xray-status')).toContainText('off · 0 paths');
 
-  await page.getByTestId('xray-all-underground').click();
-  await expect(page.getByTestId('xray-status')).toContainText('all-underground · 2 paths');
-  await expect(page.getByTestId('legend-badge-X-ray all-underground')).toBeVisible();
+  await page.getByTestId('xray-selected').click();
+  await expect(page.getByTestId('xray-status')).toContainText('selected · 1 path');
+  await expect(page.getByTestId('legend-badge-X-ray selected')).toBeVisible();
 
   await page.getByTestId('vex-3').click();
   await expect(page.getByTestId('vex-status')).toContainText('Vertical ×3');
@@ -220,8 +223,8 @@ test('clamps invalid URL state and ignores unsupported values', async ({ page })
   await expect(page.getByTestId('view-state')).toContainText(
     'lng 180.000 · lat 85.000 · z 22.0 · pitch 75 · bearing 180',
   );
-  await expect(page.getByTestId('xray-status')).toContainText('selected · 1 path');
-  await expect(page.getByTestId('vex-status')).toContainText('Vertical ×1');
+  await expect(page.getByTestId('xray-status')).toContainText('all-underground · 2 paths');
+  await expect(page.getByTestId('vex-status')).toContainText('Vertical ×5');
   await expect(page.getByTestId('selection-status')).toContainText('銀座線');
 });
 

@@ -47,10 +47,14 @@ function entry(label: string, color: Rgb, visualCue: string): LegendEntry {
 const lineLegend: LegendDefinition = {
   title: 'Line color',
   entries: [
-    entry('Golden Fixture Line', [47, 111, 115], 'solid route stroke'),
+    entry('銀座線 Ginza Line', [255, 149, 0], 'solid route stroke'),
+    entry('丸ノ内線 Marunouchi Line', [246, 46, 54], 'solid route stroke'),
     entry('Low or unknown confidence', [16, 40, 32], 'wider uncertainty cue when enabled'),
   ],
-  notes: ['Line colors fall back to a darker stroke when contrast is too low.'],
+  notes: [
+    'Line colors fall back to a darker stroke when contrast is too low.',
+    'Use Vertical ×3–×5 and Ground clearance mode to read depth.',
+  ],
 };
 
 const structureLegend: LegendDefinition = {

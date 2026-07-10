@@ -14,9 +14,9 @@ describe('url-state', () => {
       pitch: 75,
       bearing: 180,
     });
-    expect(parsed.visualization.colorMode).toBe('line');
-    expect(parsed.visualization.xrayMode).toBe('selected');
-    expect(parsed.visualization.verticalExaggeration).toBe(1);
+    expect(parsed.visualization.colorMode).toBe('clearance');
+    expect(parsed.visualization.xrayMode).toBe('all-underground');
+    expect(parsed.visualization.verticalExaggeration).toBe(5);
     expect(parsed.selection).toEqual({ kind: 'line', id: 'r3d:jp:tokyometro:line:ginza' });
   });
 
@@ -68,7 +68,8 @@ describe('url-state', () => {
 
   it('clamps invalid profile cursor state', () => {
     expect(parseUrlState('#/@35,139,12,45,0?profile=2000000').profileCursorChainageM).toBe(1000000);
-    expect(parseUrlState('#/@35,139,12,45,0?profile=bad').profileCursorChainageM).toBeNull();
+    // Invalid profile falls back to the default Ginza profile cursor (上野).
+    expect(parseUrlState('#/@35,139,12,45,0?profile=bad').profileCursorChainageM).toBe(2400);
   });
 
   it('clamps view state as a pure function', () => {
