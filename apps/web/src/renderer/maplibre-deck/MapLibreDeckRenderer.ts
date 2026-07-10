@@ -53,6 +53,8 @@ export class MapLibreDeckRenderer {
   #map: Map | null = null;
   #overlay: MapboxOverlay | null = null;
   #options: MapLibreDeckRendererOptions | null = null;
+  #ready = false;
+  #readyFallbackTimer: ReturnType<typeof setTimeout> | null = null;
   #visualization: VisualizationState = {
     colorMode: 'line',
     xrayMode: 'selected',
@@ -72,6 +74,7 @@ export class MapLibreDeckRenderer {
     }
 
     this.#options = options;
+    this.#ready = false;
 
     const map = new maplibregl.Map({
       container: options.container,
@@ -117,6 +120,10 @@ export class MapLibreDeckRenderer {
     this.#map = map;
     this.#overlay = overlay;
     this.#syncLayers();
+    // Remote basemap / extreme deep-link views can delay MapLibre events in CI.
+    this.#readyFallbackTimer = setTimeout(() => {
+      this.#markReady();
+    }, 2500);
   }
 
   setVisualization(visualization: VisualizationState): void {
