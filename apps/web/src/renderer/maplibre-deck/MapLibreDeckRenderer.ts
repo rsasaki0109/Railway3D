@@ -107,6 +107,7 @@ export class MapLibreDeckRenderer {
     map.addControl(overlay);
 
     map.on('load', this.#handleLoad);
+    map.on('idle', this.#handleIdleReady);
     map.on('moveend', this.#handleMoveEnd);
     map.on('resize', this.#handleMoveEnd);
     map.on('error', this.#handleMapError);
@@ -179,6 +180,7 @@ export class MapLibreDeckRenderer {
     }
 
     map.off('load', this.#handleLoad);
+    map.off('idle', this.#handleIdleReady);
     map.off('moveend', this.#handleMoveEnd);
     map.off('resize', this.#handleMoveEnd);
     map.off('error', this.#handleMapError);
@@ -200,19 +202,29 @@ export class MapLibreDeckRenderer {
   }
 
   #handleLoad = () => {
+    this.#markReady();
+  };
+
+  /** Backup ready signal if remote basemap tiles delay the primary load path. */
+  #handleIdleReady = () => {
+    this.#markReady();
+  };
+
+  #markReady(): void {
     this.#options?.onStatusChange('ready');
     this.#emitViewState();
-  };
+  }
 
   #handleMoveEnd = () => {
     this.#emitViewState();
   };
 
   #handleMapError = (event: ErrorEvent) => {
-    // Raster basemap failures are non-fatal; keep the railway overlay interactive.
+    // Raster basemap failures are non-fatal; still expose an interactive shell.
     if ('error' in event && event.error !== undefined) {
       console.warn('MapLibre error', event.error);
     }
+    this.#markReady();
   };
 
   #handleContextLost = () => {
