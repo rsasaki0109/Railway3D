@@ -17,7 +17,7 @@ describe('url-state', () => {
     expect(parsed.visualization.colorMode).toBe('line');
     expect(parsed.visualization.xrayMode).toBe('selected');
     expect(parsed.visualization.verticalExaggeration).toBe(1);
-    expect(parsed.selection).toEqual({ kind: 'line', id: 'r3d:zz:synthetic:line:golden' });
+    expect(parsed.selection).toEqual({ kind: 'line', id: 'r3d:jp:tokyometro:line:ginza' });
   });
 
   it('round trips line selection and visualization state', () => {
@@ -38,7 +38,7 @@ describe('url-state', () => {
         guideVisible: false,
         uncertaintyVisible: false,
       },
-      selection: { kind: 'line', id: 'r3d:zz:synthetic:line:golden' },
+      selection: { kind: 'line', id: 'r3d:jp:tokyometro:line:ginza' },
       profileCursorChainageM: 1234.56,
     });
 
@@ -56,14 +56,14 @@ describe('url-state', () => {
 
   it('serializes station selection without leaking hover state', () => {
     const state = createAppState({
-      selection: { kind: 'station', id: 'r3d:zz:synthetic:station:A' },
-      hovered: { kind: 'station', id: 'r3d:zz:synthetic:station:C' },
+      selection: { kind: 'station', id: 'r3d:jp:tokyometro:station:ginza-ueno' },
+      hovered: { kind: 'station', id: 'r3d:jp:tokyometro:station:ginza-shibuya' },
     });
 
     const hash = serializeUrlState(state);
-    expect(hash).toContain('station=r3d%3Azz%3Asynthetic%3Astation%3AA');
+    expect(hash).toContain('station=r3d%3Ajp%3Atokyometro%3Astation%3Aginza-ueno');
     expect(hash).not.toContain('hover');
-    expect(hash).not.toContain('station%3AC');
+    expect(hash).not.toContain('shibuya');
   });
 
   it('clamps invalid profile cursor state', () => {

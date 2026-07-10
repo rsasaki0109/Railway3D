@@ -9,9 +9,9 @@ export interface ViewStateSerializable {
 }
 
 export const INITIAL_VIEW_STATE: ViewStateSerializable = {
-  longitude: 139.7671,
-  latitude: 35.6812,
-  zoom: 11.5,
+  longitude: 139.75,
+  latitude: 35.685,
+  zoom: 12,
   pitch: 52,
   bearing: -28,
 };

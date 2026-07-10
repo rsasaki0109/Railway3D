@@ -1,5 +1,10 @@
 import type { ViewStateSerializable } from '../../renderer/maplibre-deck/view-state';
 import type { EntityId, Selection } from '../../renderer/railway/render-types';
+import {
+  TOKYO_METRO_GINZA_LINE_ID,
+  TOKYO_METRO_MARUNOUCHI_LINE_ID,
+  tokyoMetroStationCatalog,
+} from '../../renderer/railway/tokyo-metro-render-dataset';
 
 export type SearchEntryKind = 'line' | 'station';
 
@@ -123,89 +128,109 @@ export function findSearchEntryBySelection(
   );
 }
 
-export const syntheticSearchEntries: readonly SearchEntry[] = [
+function stationSearchEntry(
+  id: SearchEntry['id'],
+  primaryName: string,
+  aliases: readonly string[],
+  stationNumber: string,
+  lineName: string,
+  center: readonly [number, number],
+): SearchEntry {
+  return createSearchEntry({
+    id,
+    kind: 'station',
+    primaryName,
+    aliases,
+    stationNumber,
+    lineName,
+    regionName: 'Tokyo Metro',
+    center,
+    targetView: {
+      longitude: center[0],
+      latitude: center[1],
+      zoom: 14,
+      pitch: 55,
+      bearing: -28,
+    },
+  });
+}
+
+/** Primary search index for the Tokyo Metro GitHub Pages pilot. */
+export const tokyoMetroSearchEntries: readonly SearchEntry[] = [
   createSearchEntry({
-    id: 'r3d:zz:synthetic:line:golden',
+    id: TOKYO_METRO_GINZA_LINE_ID,
     kind: 'line',
-    primaryName: 'Golden Fixture Line',
-    aliases: ['ゴールデン線', 'ごーるでんせん', 'golden line', 'GL'],
-    lineName: 'Synthetic Golden',
-    regionName: 'Synthetic District',
+    primaryName: '銀座線',
+    aliases: ['ぎんざせん', 'ginza line', 'ginza', 'G', '東京メトロ銀座線'],
+    lineName: 'Tokyo Metro Ginza Line',
+    regionName: 'Tokyo',
     center: [139.7671, 35.6812],
     targetView: {
-      longitude: 139.7671,
-      latitude: 35.6812,
-      zoom: 11.5,
+      longitude: 139.75,
+      latitude: 35.68,
+      zoom: 12,
       pitch: 52,
       bearing: -28,
     },
   }),
   createSearchEntry({
-    id: 'r3d:zz:synthetic:station:A',
-    kind: 'station',
-    primaryName: 'Station A',
-    aliases: ['駅A', 'えきえー', 'エキエー', 'eki a', 'golden station a'],
-    stationNumber: 'SYN-A',
-    lineName: 'Golden Fixture Line',
-    regionName: 'Synthetic West',
-    center: [139.61, 35.72],
+    id: TOKYO_METRO_MARUNOUCHI_LINE_ID,
+    kind: 'line',
+    primaryName: '丸ノ内線',
+    aliases: ['まるのうちせん', 'marunouchi line', 'marunouchi', 'M', '東京メトロ丸ノ内線'],
+    lineName: 'Tokyo Metro Marunouchi Line',
+    regionName: 'Tokyo',
+    center: [139.73, 35.69],
     targetView: {
-      longitude: 139.61,
-      latitude: 35.72,
-      zoom: 13.5,
-      pitch: 55,
-      bearing: -28,
-    },
-  }),
-  createSearchEntry({
-    id: 'r3d:zz:synthetic:station:C',
-    kind: 'station',
-    primaryName: 'Station C',
-    aliases: ['駅C', 'えきしー', 'エキシー', 'eki c', 'golden station c'],
-    stationNumber: 'SYN-C',
-    lineName: 'Golden Fixture Line',
-    regionName: 'Synthetic East',
-    center: [139.92, 35.656],
-    targetView: {
-      longitude: 139.92,
-      latitude: 35.656,
-      zoom: 13.5,
-      pitch: 55,
-      bearing: -28,
-    },
-  }),
-  createSearchEntry({
-    id: 'r3d:zz:synthetic:station:echo-north',
-    kind: 'station',
-    primaryName: 'Station Echo',
-    aliases: ['駅エコー', 'えきえこー', 'eki echo north'],
-    stationNumber: 'SYN-N',
-    lineName: 'North Fixture Branch',
-    regionName: 'Synthetic North',
-    center: [139.705, 35.604],
-    targetView: {
-      longitude: 139.705,
-      latitude: 35.604,
-      zoom: 13,
+      longitude: 139.73,
+      latitude: 35.69,
+      zoom: 11.8,
       pitch: 52,
       bearing: -20,
     },
   }),
-  createSearchEntry({
-    id: 'r3d:zz:synthetic:station:echo-south',
-    kind: 'station',
-    primaryName: 'Station Echo',
-    aliases: ['駅エコー', 'えきえこー', 'eki echo south'],
-    stationNumber: 'SYN-S',
-    lineName: 'South Fixture Branch',
-    regionName: 'Synthetic South',
-    center: [139.708, 35.646],
-    targetView: {
-      longitude: 139.708,
-      latitude: 35.646,
-      zoom: 13,
-      pitch: 52,
-      bearing: -20,
-    },
-  }),
+  ...tokyoMetroStationCatalog.ginza.map((station) =>
+    stationSearchEntry(
+      station.id,
+      station.name,
+      [station.number, station.name],
+      station.number,
+      '銀座線',
+      [station.position[0], station.position[1]],
+    ),
+  ),
+  ...tokyoMetroStationCatalog.marunouchi
+    .filter(
+      (station) => !tokyoMetroStationCatalog.ginza.some((ginza) => ginza.name === station.name),
+    )
+    .map((station) =>
+      stationSearchEntry(
+        station.id,
+        station.name,
+        [station.number, station.name],
+        station.number,
+        '丸ノ内線',
+        [station.position[0], station.position[1]],
+      ),
+    ),
+  // Same-name transfer stations appear on both lines with distinct ids.
+  stationSearchEntry(
+    'r3d:jp:tokyometro:station:marunouchi-ginza',
+    '銀座',
+    ['ぎんざ', 'ginza', 'M-16'],
+    'M-16',
+    '丸ノ内線',
+    [139.7671, 35.6717],
+  ),
+  stationSearchEntry(
+    'r3d:jp:tokyometro:station:marunouchi-akasaka-mitsuke',
+    '赤坂見附',
+    ['あかさかみつけ', 'akasaka-mitsuke', 'M-13'],
+    'M-13',
+    '丸ノ内線',
+    [139.7366, 35.6769],
+  ),
 ];
+
+/** @deprecated Use tokyoMetroSearchEntries; kept alias for gradual migration. */
+export const syntheticSearchEntries = tokyoMetroSearchEntries;

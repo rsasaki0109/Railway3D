@@ -15,7 +15,7 @@
     "lineName": "銀座線",
     "fromStation": "上野",
     "toStation": "浅草",
-    "approxBounds": [139.770, 35.708, 139.800, 35.715],
+    "approxBounds": [139.77, 35.708, 139.8, 35.715],
     "rationale": [
       "Short, continuous urban subway segment suitable for adapter integration tests.",
       "Covered by national railway inventory sources (N02 role) as line/station inventory candidate.",

@@ -5,11 +5,18 @@ import type {
   Selection,
   StructureType,
 } from '../../renderer/railway/render-types';
+import { ACTIVE_LINE_ID } from '../../renderer/railway/active-dataset';
+import {
+  TOKYO_METRO_GINZA_LINE_ID,
+  tokyoMetroStationCatalog,
+} from '../../renderer/railway/tokyo-metro-render-dataset';
 import { SYNTHETIC_LINE_ID } from '../../renderer/railway/synthetic-render-dataset';
 
 export const SYNTHETIC_PROFILE_SAMPLE_INTERVAL_M = 500;
 export const SYNTHETIC_PROFILE_TOTAL_LENGTH_M = 3000;
-export const DEFAULT_PROFILE_CURSOR_CHAINAGE_M = 1000;
+export const TOKYO_METRO_PROFILE_SAMPLE_INTERVAL_M = 800;
+/** Default cursor on Ginza Line pilot (上野 ≈ 2.4 km from 浅草). */
+export const DEFAULT_PROFILE_CURSOR_CHAINAGE_M = 2400;
 
 export interface ProfileSample {
   chainageM: number;
@@ -153,6 +160,46 @@ function isFiniteNumber(value: number): boolean {
   return Number.isFinite(value);
 }
 
+export const tokyoMetroGinzaElevationProfile: SyntheticElevationProfile = {
+  id: 'r3d:jp:tokyometro:profile:ginza-main',
+  title: '銀座線 浅草–渋谷（illustrative profile）',
+  sampleIntervalTargetM: TOKYO_METRO_PROFILE_SAMPLE_INTERVAL_M,
+  totalLengthM: (tokyoMetroStationCatalog.ginza.length - 1) * TOKYO_METRO_PROFILE_SAMPLE_INTERVAL_M,
+  samples: tokyoMetroStationCatalog.ginza.map((station, index) => {
+    const chainageM = index * TOKYO_METRO_PROFILE_SAMPLE_INTERVAL_M;
+    const groundElevationM = 12 + (index % 5);
+    const railKnown = station.number !== 'G-10';
+    const railElevationM = railKnown ? station.position[2] : null;
+    const clearanceM = railElevationM === null ? null : railElevationM - groundElevationM;
+    return {
+      chainageM,
+      position: [station.position[0], station.position[1]] as const,
+      railElevationM,
+      groundElevationM,
+      clearanceM,
+      gradientPermille: railKnown ? 8 : null,
+      uncertaintyM: railKnown ? 4 : 8,
+      structure: 'underground_tunnel' as const,
+      confidence: 'low' as const,
+      segmentId: 'r3d:jp:tokyometro:segment:ginza-main',
+    };
+  }),
+  markers: [
+    { chainageM: 0, label: '浅草', kind: 'station' },
+    {
+      chainageM: 3 * TOKYO_METRO_PROFILE_SAMPLE_INTERVAL_M,
+      label: '上野',
+      kind: 'station',
+    },
+    {
+      chainageM:
+        (tokyoMetroStationCatalog.ginza.length - 1) * TOKYO_METRO_PROFILE_SAMPLE_INTERVAL_M,
+      label: '渋谷',
+      kind: 'station',
+    },
+  ],
+};
+
 export function loadSyntheticProfileForSelection(
   selection: Selection,
 ): Promise<SyntheticElevationProfile> {
@@ -160,8 +207,15 @@ export function loadSyntheticProfileForSelection(
     return Promise.resolve(syntheticElevationProfile);
   }
 
+  if (
+    selection?.kind === 'line' &&
+    (selection.id === TOKYO_METRO_GINZA_LINE_ID || selection.id === ACTIVE_LINE_ID)
+  ) {
+    return Promise.resolve(tokyoMetroGinzaElevationProfile);
+  }
+
   return Promise.reject(
-    new ProfileLoadError('Synthetic profile is available only for Golden Fixture Line.'),
+    new ProfileLoadError('Elevation profile is available for 銀座線 (Tokyo Metro pilot).'),
   );
 }
 
